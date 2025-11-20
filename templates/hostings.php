@@ -13,6 +13,8 @@ HERE;
 
 include("elements/header.php");
 
+include("templates/elements/footer.php");
+
 echo <<<HERE
 </body>
 </html>

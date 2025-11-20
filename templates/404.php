@@ -14,6 +14,7 @@ HERE;
 include("elements/header.php");
 include("elements/rickroll.html");
 include("elements/404.html");
+include("templates/elements/footer.php");
 
 echo <<<HERE
 </body>
