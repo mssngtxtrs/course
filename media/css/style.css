@@ -14,7 +14,7 @@
     --foreground-raise: #fbf1c7;
 
     /* font size */
-    --font-size-heading1: 56px;
+    --font-size-heading1: 64px;
     --font-size-heading2: 48px;
     --font-size-subheadings: 16px;
     --font-size-text: 18px;
@@ -104,6 +104,10 @@ header .container {
     align-items: center;
 }
 
+section .container > h1 {
+    margin-bottom: 20px;
+}
+
 h1, h2, h3, p, a {
     color: var(--foreground);
     margin: 0;
@@ -128,8 +132,6 @@ h3 {
 }
 
 a, p {
-    font-family: "Inter", Arial, sans-serif;
-    font-weight: 400;
     font-size: var(--font-size-text);
 }
 
@@ -160,7 +162,12 @@ a.button:active {
 
 a.header-nav-link {
     text-decoration: none;
-    margin-left: 12px;
+    margin-right: 12px;
+}
+
+a.account {
+    font-weight: 700;
+    text-decoration: none;
 }
 
 a.button.urgent {
@@ -234,6 +241,8 @@ a.header-nav-link:active {
     padding: 8px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #banner img {
@@ -247,5 +256,35 @@ a.header-nav-link:active {
 }
 
 #banner p {
+    width: 100%;
     margin-bottom: 24px;
+}
+
+
+
+#advantages .advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(2, calc(50% - 4px));
+    gap: 8px;
+}
+
+#advantages .advantage{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+    background: var(--background-raise);
+    border-radius: var(--radius-level0);
+}
+
+#advantages .advantage .icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+    margin: 8px;
+    margin-right: 12px;
+}
+
+#advantages .advantage .icon img {
+    width: inherit;
+    height: inherit;
 }
