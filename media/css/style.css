@@ -1,16 +1,72 @@
-:root {
-    --background: #282828;
-    --backgorund-lower: #1d2021;
-    --background-raise: #32302f;
-    --backgorund-raise2: #504945;
+/* Variables */
 
+:root {
+    /* background colors */
+    --background: #282828;
+    --background-lower: #1d2021;
+    --background-raise: #32302f;
+    --background-raise2: #504945;
+
+    /* foreground colors */
     --foreground: #ebdbb2;
     --foreground-lower: #d5c4a1;
     --foreground-lower2: #bdae93;
     --foreground-raise: #fbf1c7;
+
+    /* font size */
+    --font-size-heading1: 56px;
+    --font-size-heading2: 48px;
+    --font-size-subheadings: 16px;
+    --font-size-text: 18px;
+    --font-size-buttons: 16px;
+    --font-size-hints: 10px;
+
+    /* general radius */
+    --radius-level0: 16px;
+    /* inner blocks radius */
+    --radius-level1: 12px;
+    /* buttons radius */
+    --radius-level2: 8px;
+    /* other content radius */
+    --radius-level3: 4px;
+
+    /* button paddings */
+    --button-padding: 12px 24px;
+}
+
+/* Fonts setup */
+
+@font-face {
+    font-family: "Inter";
+    src: local('Inter'),
+        url('../fonts/inter.ttf'), format('truetype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: local('Inter'),
+        url('../fonts/inter-italic.ttf'), format('truetype');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: local('JetBrains Mono'),
+        url('../fonts/jetbrains-mono.ttf'), format('truetype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: local('JetBrains Mono'),
+        url('../fonts/jetbrains-mono-italic.ttf'), format('truetype');
+    font-style: italic;
 }
 
 
+
+/* Universal */
 
 * {
     font-family: "Inter", Arial, sans-serif;
@@ -22,10 +78,174 @@ body {
 }
 
 .container {
+    margin-inline: auto;
     width: 1024px;
 }
 
 header {
     width: 100vw;
     height: 100px;
+}
+
+header .logo {
+    width: 80px;
+    height: 80px;
+}
+
+header .logo img {
+    width: inherit;
+    height: inherit;
+}
+
+header .container {
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1, h2, h3, p, a {
+    color: var(--foreground);
+    margin: 0;
+}
+
+h1 {
+    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: var(--font-size-heading1);
+}
+
+h2 {
+    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: var(--font-size-heading2);
+}
+
+h3 {
+    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: var(--font-size-subheadings);
+}
+
+a, p {
+    font-family: "Inter", Arial, sans-serif;
+    font-weight: 400;
+    font-size: var(--font-size-text);
+}
+
+a {
+    transition: color .3s;
+}
+
+a.button {
+    display: block;
+    padding: var(--button-padding);
+    text-decoration: none;
+    border-radius: var(--radius-level1);
+    transition: background-color .3s;
+    background: var(--background-raise);
+    font-size: var(--font-size-buttons);
+    font-weight: 700;
+}
+
+a.button:hover {
+    background: var(--background-raise2);
+    color: var(--foreground);
+}
+
+a.button:active {
+    background: var(--background-lower);
+    color: var(--foreground);
+}
+
+a.header-nav-link {
+    text-decoration: none;
+    margin-left: 12px;
+}
+
+a.button.urgent {
+    background: var(--foreground);
+    color: var(--background);
+}
+
+a.button.urgent:hover {
+    background: var(--foreground-raise);
+    color: var(--background);
+}
+
+a.button.urgent:active {
+    background: var(--foreground-lower);
+    color: var(--background);
+}
+
+a.header-nav-link:hover {
+    color: var(--foreground-raise);
+}
+
+a.header-nav-link:active {
+    color: var(--foreground-lower);
+}
+
+
+
+/* 404 */
+
+#not-found {
+    margin-top: 200px;
+    height: calc(100vh - 200px - 100px);
+}
+
+#not-found .container {
+    width: 540px;
+    display: flex;
+    flex-direction: column;
+    justify-items: space-between;
+    align-items: center;
+}
+
+#not-found h1,
+#not-found h3 {
+    width: inherit;
+}
+
+#not-found p {
+    margin-top: 75px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+
+
+/* Main page contents */
+
+#banner {
+    height: 500px;
+}
+
+#banner .container {
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#banner .column {
+    width: calc(50% - 16px);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+#banner img {
+    height: calc(300px - 16px);
+    display: block;
+    margin: auto;
+}
+
+#banner h1 {
+    margin-bottom: 16px;
+}
+
+#banner p {
+    margin-bottom: 24px;
 }
