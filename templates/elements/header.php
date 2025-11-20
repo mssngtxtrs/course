@@ -5,12 +5,15 @@
             <!-- <img src="" alt="Логотип"> -->
         </a>
         <nav class="header-nav">
-            <!-- <a href="../../media/placeholders/rickroll.mp4" class="header-nav-link">О нас</a> -->
             <a class="header-nav-link" href="../../about">О нас</a>
-            <!-- <a href="../../media/placeholders/rickroll.mp4" class="header-nav-link">Хостинги</a> -->
             <a class="header-nav-link" href="../../hostings">Хостинги</a>
-            <!-- <a href="../../media/placeholders/rickroll.mp4" class="header-nav-link">Личный кабинет</a> -->
-            <a class="account" href="../../account"><?php if (isset($user['name'])) { echo $user['name']; } else { echo "Войти"; } ?></a>
+<?php
+if (isset($user['name'])) {
+    echo "<a class='button urgent account' href='../../account'>" . $user['name'] . "</a>";
+} else {
+    echo "<a class='button urgent' href='../../login'>Войти</a><a class='button' href='../../auth'>Регистрация</a>";
+}
+?>
         </nav>
     </div>
 </header>

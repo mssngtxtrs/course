@@ -13,9 +13,14 @@
     --foreground-lower2: #bdae93;
     --foreground-raise: #fbf1c7;
 
+    /* destructive colors */
+    --destructive: #cc241d;
+    --destructive-raise: #fb4934;
+    --destructive-lower: #9d0006;
+
     /* font size */
     --font-size-heading1: 64px;
-    --font-size-heading2: 48px;
+    --font-size-heading2: 36px;
     --font-size-subheadings: 16px;
     --font-size-text: 18px;
     --font-size-buttons: 16px;
@@ -87,28 +92,52 @@ header {
     height: 100px;
 }
 
+footer {
+    width: 100vw;
+    height: 160px;
+}
+
 header .logo {
     width: 80px;
     height: 80px;
 }
 
-header .logo img {
+footer .logo {
+    width: 128px;
+    height: 128px;
+}
+
+header .logo img,
+footer .logo img {
     width: inherit;
     height: inherit;
 }
 
-header .container {
+header .container,
+footer .container {
     height: inherit;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+header .header-nav,
+footer .footer-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer .footer-nav {
+    flex-direction: column;
+    align-items: end;
+}
+
 section .container > h1 {
     margin-bottom: 20px;
 }
 
-h1, h2, h3, p, a {
+h1, h2, h3, p, a, label {
     color: var(--foreground);
     margin: 0;
 }
@@ -131,6 +160,11 @@ h3 {
     font-size: var(--font-size-subheadings);
 }
 
+label {
+    font-weight: 400;
+    font-size: var(--font-size-buttons);
+}
+
 a, p {
     font-size: var(--font-size-text);
 }
@@ -139,7 +173,8 @@ a {
     transition: color .3s;
 }
 
-a.button {
+a.button,
+button.button {
     display: block;
     padding: var(--button-padding);
     text-decoration: none;
@@ -150,47 +185,67 @@ a.button {
     font-weight: 700;
 }
 
-a.button:hover {
+header a.button {
+    margin-right: 12px;
+}
+
+a.button:hover,
+b.button:hover {
     background: var(--background-raise2);
     color: var(--foreground);
 }
 
-a.button:active {
+a.button:active,
+b.button:active {
     background: var(--background-lower);
     color: var(--foreground);
 }
 
-a.header-nav-link {
+a.header-nav-link,
+a.footer-nav-link {
     text-decoration: none;
     margin-right: 12px;
 }
 
-a.account {
+a.account,
+p.account {
     font-weight: 700;
     text-decoration: none;
 }
 
-a.button.urgent {
+p.account {
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+a.button.urgent,
+button.button.urgent {
     background: var(--foreground);
     color: var(--background);
 }
 
-a.button.urgent:hover {
+a.button.urgent:hover,
+button.button.urgent:hover {
     background: var(--foreground-raise);
     color: var(--background);
 }
 
-a.button.urgent:active {
+a.button.urgent:active,
+button.button.urgent:active {
     background: var(--foreground-lower);
     color: var(--background);
 }
 
-a.header-nav-link:hover {
+a.header-nav-link:hover,
+a.footer-nav-link:hover {
     color: var(--foreground-raise);
+    text-decoration: underline;
 }
 
-a.header-nav-link:active {
+a.header-nav-link:active,
+a.footer-nav-link:active {
     color: var(--foreground-lower);
+    text-decoration: underline;
 }
 
 
@@ -199,11 +254,11 @@ a.header-nav-link:active {
 
 #not-found {
     margin-top: 200px;
-    height: calc(100vh - 200px - 100px);
+    height: calc(100vh - 200px - 100px - 160px);
 }
 
 #not-found .container {
-    width: 540px;
+    max-width: 540px;
     display: flex;
     flex-direction: column;
     justify-items: space-between;
@@ -212,13 +267,136 @@ a.header-nav-link:active {
 
 #not-found h1,
 #not-found h3 {
-    width: inherit;
+    width: 540px;
 }
 
 #not-found p {
     margin-top: 75px;
     margin-bottom: 24px;
+}
+
+/* Authentication */
+
+#auth {
+    margin-top: 200px;
+    height: calc(100vh - 200px - 100px - 160px);
+}
+
+#auth .container {
+    max-width: 524px;
+    background: var(--background-raise);
+    border-radius: var(--radius-level0);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#auth h1 {
     text-align: center;
+    margin: 20px 0;
+}
+
+#auth .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#auth .input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#auth .row:first-of-type .input {
+    width: calc(50% - 4px);
+}
+
+#auth label {
+    margin: 12px 0 6px 0;
+}
+
+#auth input {
+    padding: 8px 16px;
+    background: var(--background-lower);
+    color: var(--foreground);
+    border: 1px solid var(--background-lower);
+    border-radius: var(--radius-level2);
+    font-size: var(--font-size-buttons);
+    transition: background-color .3s, border-color .3s;
+}
+
+#auth input:user-invalid {
+    border-color: var(--destructive);
+}
+
+#auth input:hover {
+    border-color: var(--background);
+    background: var(--background);
+}
+
+#auth input[type="text"]:focus,
+#auth input[type="email"]:focus,
+#auth input[type="password"]:focus {
+    border-color: var(--background-raise2);
+    background: var(--background-raise2);
+}
+
+#auth input[type="checkbox"] {
+    appearance: none;
+    position: relative;
+    padding: 0;
+    margin-left: 0;
+    width: 30px;
+    height: 30px;
+}
+
+#auth .row:last-of-type .input {
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 0 10px 0;
+}
+
+#auth .row:last-of-type label {
+    margin: 0 0 0 6px;
+}
+
+#auth input[type="checkbox"]:checked {
+    background: var(--background-raise2);
+    border-color: var(--background-raise2);
+}
+
+#auth input[type="checkbox"]::after {
+    display: block;
+    content: "\2714";
+    position: absolute;
+    top: -2px;
+    left: 4px;
+    width: 30px;
+    height: 30px;
+    font-size: 26px;
+    color: transparent;
+    transition: background-color .3s;
+}
+
+#auth input[type="checkbox"]:checked::after {
+    color: var(--foreground);
+}
+
+#auth input[type="submit"] {
+    width: 100%;
+    background: var(--foreground);
+    color: var(--background);
+}
+
+#auth input[type="submit"]:hover {
+    background: var(--foreground-raise);
+}
+
+#auth input[type="submit"]:active {
+    background: var(--foreground-lower);
 }
 
 
