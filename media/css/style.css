@@ -1,0 +1,31 @@
+:root {
+    --background: #282828;
+    --backgorund-lower: #1d2021;
+    --background-raise: #32302f;
+    --backgorund-raise2: #504945;
+
+    --foreground: #ebdbb2;
+    --foreground-lower: #d5c4a1;
+    --foreground-lower2: #bdae93;
+    --foreground-raise: #fbf1c7;
+}
+
+
+
+* {
+    font-family: "Inter", Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+}
+
+.container {
+    width: 1024px;
+}
+
+header {
+    width: 100vw;
+    height: 100px;
+}
