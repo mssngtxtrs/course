@@ -75,6 +75,7 @@
 
 * {
     font-family: "Inter", Arial, sans-serif;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -134,7 +135,7 @@ footer .footer-nav {
 }
 
 section .container > h1 {
-    margin-bottom: 20px;
+    margin-top: 50px;
 }
 
 h1, h2, h3, p, a, label {
@@ -465,4 +466,20 @@ a.footer-nav-link:active {
 #advantages .advantage .icon img {
     width: inherit;
     height: inherit;
+}
+
+
+
+#hostings-slider .hostings-slider {
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+}
+
+#hostings-slider .hostings-slider .hosting {
+    scroll-snap-align: center;
+    width: inherit;
+    height: fit-content;
+    margin: 0 40px;
+    border-radius: var(--radius-level0);
+    background: var(--background-raise);
 }

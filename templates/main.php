@@ -14,6 +14,7 @@ HERE;
 include("templates/elements/header.php");
 include("templates/elements/banner.html");
 include("templates/elements/advantages.html");
+include("templates/elements/hostings-slider.php");
 include("templates/elements/footer.php");
 
 echo <<<HERE
