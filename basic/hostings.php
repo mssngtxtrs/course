@@ -1,12 +1,10 @@
 <?php
-
 namespace Server;
 
 class Hostings {
     private $hostings;
 
-    public function __construct()
-    {
+    public function __construct() {
         global $database;
         $query = "select * from `hostings`";
         $this->hostings = $database->returnQuery($query);

@@ -7,13 +7,13 @@
         <nav class="header-nav">
             <a class="header-nav-link" href="../../about">О нас</a>
             <a class="header-nav-link" href="../../hostings">Хостинги</a>
-<?php
-if (isset($user['name'])) {
-    echo "<a class='button urgent account' href='../../account'>" . $user['name'] . "</a>";
-} else {
-    echo "<a class='button urgent' href='../../login'>Войти</a><a class='button' href='../../auth'>Регистрация</a>";
-}
-?>
+            <?php
+            if (isset($user['name'])) {
+                echo "<a class='button urgent account' href='../../account'>" . $user['name'] . "</a>";
+            } else {
+                echo "<a class='button urgent' href='../../auth'>Авторизация</a>";
+            }
+            ?>
         </nav>
     </div>
 </header>

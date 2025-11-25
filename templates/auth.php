@@ -12,13 +12,11 @@ echo <<<HERE
 HERE;
 
 include("elements/header.php");
-include("elements/register.html");
+include("elements/auth.html");
 include("templates/elements/footer.php");
 
 echo <<<HERE
 </body>
 </html>
 HERE;
-
-unsetServer();
 ?>

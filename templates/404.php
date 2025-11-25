@@ -20,6 +20,4 @@ echo <<<HERE
 </body>
 </html>
 HERE;
-
-unsetServer();
 ?>
