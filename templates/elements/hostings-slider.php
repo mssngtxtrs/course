@@ -2,34 +2,48 @@
     <div class="container">
         <h1>Наши хостинги</h1>
         <div class="hostings-slider">
-<?php
-    $query = "select * from `hostings`";
-
-    $result = $conn->query($query);
-
-    if (!$conn->affected_rows) {
-        echo <<<HERE
-<div class="hosting">
-    <h3>На данный момент хостингов нет</h3>
-    <p>Но мы скоро это исправим!</p>
-</div>
-HERE;
-    } else {
-        foreach ($result->fetch_all(MYSQLI_ASSOC) as $hosting) {
-            echo "<div class='hosting'>";
-            echo "<h2>Хостинг " . $hosting['hostingID'] . "</h2>";
-            echo "<p>Максимум пользователей: " . $hosting['maxUsers'] . "</p>";
-            echo "<p>Процессор: " . $hosting['cpu'] . "</p>";
-            echo "<p>Оперативная память: " . $hosting['ram'] / 1024 . " ГБ</p>";
-            echo "<p>Пользовательский объём: " . $hosting['ramUser'] / 1024 . " ГБ</p>";
-            echo "<p>Объём диска: " . $hosting['diskSpace'] / 1024 . " ГБ</p>";
-            echo "<p>Пользовательский объём: " . $hosting['diskSpaceUser'] / 1024 . " ГБ</p>";
-            echo "</div>";
-        }
-    }
-
-    $result->free();
-?>
+            <?php echo $hostings->returnHostings("slider"); ?>
         </div>
+        <div class="hostings-slider-controls">
+            <button class="prev-button button"><img id="prev-button-icon" src="media/icons/prev.svg" alt="⮜"></button>
+            <button class="next-button button"><img id="next-button-icon" src="media/icons/next.svg" alt="⮞"></button>
+        </div>
+        <script>
+            const slider = document.querySelector('.hostings-slider');
+            const prevButton = document.querySelector('.prev-button');
+            const nextButton = document.querySelector('.next-button');
+
+            const prevButtonIcon = document.getElementById('prev-button-icon');
+            const nextButtonIcon = document.getElementById('next-button-icon');
+
+            const max = document.getElementsByClassName('.hosting').length;
+            var index = 0;
+
+            prevButton.addEventListener('click', () => {
+                slider.scrollBy({
+                    left: -1024,
+                });
+                /* if (index === 0) { */
+                /*     prevButtonIcon.style.setProperty("opacity", "0.5"); */
+                /* } else { */
+                /*     nextButtonIcon.style.setProperty("opacity", "1"); */
+                /*     prevButtonIcon.style.setProperty("opacity", "1"); */
+                /*     index += 1; */
+                /* } */
+            });
+
+            nextButton.addEventListener('click', () => {
+                slider.scrollBy({
+                    left: 1024,
+                });
+                /* if (index === max) { */
+                /*     nextButtonIcon.style.setProperty("opacity", "0.5"); */
+                /* } else { */
+                /*     prevButtonIcon.style.setProperty("opacity", "1"); */
+                /*     nextButtonIcon.style.setProperty("opacity", "1"); */
+                /*     index -= 1; */
+                /* } */
+            });
+        </script>
     </div>
 </section>

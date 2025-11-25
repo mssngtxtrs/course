@@ -43,29 +43,29 @@
 
 @font-face {
     font-family: "Inter";
-    src: local('Inter'),
-        url('../fonts/inter.ttf'), format('truetype');
+    src: local("Inter"),
+        url("../fonts/inter.ttf"), format("truetype");
     font-style: normal;
 }
 
 @font-face {
     font-family: "Inter";
-    src: local('Inter'),
-        url('../fonts/inter-italic.ttf'), format('truetype');
+    src: local("Inter"),
+        url("../fonts/inter-italic.ttf"), format("truetype");
     font-style: italic;
 }
 
 @font-face {
     font-family: "JetBrains Mono";
-    src: local('JetBrains Mono'),
-        url('../fonts/jetbrains-mono.ttf'), format('truetype');
+    src: local("JetBrains Mono"),
+        url("../fonts/jetbrains-mono.ttf"), format("truetype");
     font-style: normal;
 }
 
 @font-face {
     font-family: "JetBrains Mono";
-    src: local('JetBrains Mono'),
-        url('../fonts/jetbrains-mono-italic.ttf'), format('truetype');
+    src: local("JetBrains Mono"),
+        url("../fonts/jetbrains-mono-italic.ttf"), format("truetype");
     font-style: italic;
 }
 
@@ -86,6 +86,14 @@ body {
 .container {
     margin-inline: auto;
     width: 1024px;
+}
+
+.placeholder-size {
+    height: calc(100vh - 100px - 160px);
+}
+
+section {
+    margin-top: 75px;
 }
 
 header {
@@ -135,28 +143,33 @@ footer .footer-nav {
 }
 
 section .container > h1 {
-    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
-h1, h2, h3, p, a, label {
+h1,
+h2,
+h3,
+p,
+a,
+label {
     color: var(--foreground);
     margin: 0;
 }
 
 h1 {
-    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
     font-weight: 700;
     font-size: var(--font-size-heading1);
 }
 
 h2 {
-    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
     font-weight: 700;
     font-size: var(--font-size-heading2);
 }
 
 h3 {
-    font-family: "JetBrains Mono", 'Courier New', Courier, monospace;
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
     font-weight: 700;
     font-size: var(--font-size-subheadings);
 }
@@ -166,12 +179,13 @@ label {
     font-size: var(--font-size-buttons);
 }
 
-a, p {
+a,
+p {
     font-size: var(--font-size-text);
 }
 
 a {
-    transition: color .3s;
+    transition: color 0.3s;
 }
 
 a.button,
@@ -180,8 +194,10 @@ button.button {
     padding: var(--button-padding);
     text-decoration: none;
     border-radius: var(--radius-level1);
-    transition: background-color .3s;
+    transition: background-color 0.3s;
     background: var(--background-raise);
+    color: var(--foreground);
+    border: 1px solid var(--background-raise);
     font-size: var(--font-size-buttons);
     font-weight: 700;
 }
@@ -193,12 +209,14 @@ header a.button {
 a.button:hover,
 b.button:hover {
     background: var(--background-raise2);
+    border-color: var(--background-raise2);
     color: var(--foreground);
 }
 
 a.button:active,
 b.button:active {
     background: var(--background-lower);
+    border-color: var(--background-lower);
     color: var(--foreground);
 }
 
@@ -222,18 +240,21 @@ p.account {
 a.button.urgent,
 button.button.urgent {
     background: var(--foreground);
+    border-color: var(--foreground);
     color: var(--background);
 }
 
 a.button.urgent:hover,
 button.button.urgent:hover {
     background: var(--foreground-raise);
+    border-color: var(--foreground-raise);
     color: var(--background);
 }
 
 a.button.urgent:active,
 button.button.urgent:active {
     background: var(--foreground-lower);
+    border-color: var(--foreground-lower);
     color: var(--background);
 }
 
@@ -275,6 +296,8 @@ a.footer-nav-link:active {
     margin-top: 75px;
     margin-bottom: 24px;
 }
+
+
 
 /* Authentication */
 
@@ -326,7 +349,9 @@ a.footer-nav-link:active {
     border: 1px solid var(--background-lower);
     border-radius: var(--radius-level2);
     font-size: var(--font-size-buttons);
-    transition: background-color .3s, border-color .3s;
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
 }
 
 #auth input:user-invalid {
@@ -379,7 +404,7 @@ a.footer-nav-link:active {
     height: 30px;
     font-size: 26px;
     color: transparent;
-    transition: background-color .3s;
+    transition: background-color 0.3s;
 }
 
 #auth input[type="checkbox"]:checked::after {
@@ -439,15 +464,13 @@ a.footer-nav-link:active {
     margin-bottom: 24px;
 }
 
-
-
 #advantages .advantages-grid {
     display: grid;
     grid-template-columns: repeat(2, calc(50% - 4px));
     gap: 8px;
 }
 
-#advantages .advantage{
+#advantages .advantage {
     display: flex;
     justify-content: space-between;
     padding: 4px;
@@ -468,18 +491,51 @@ a.footer-nav-link:active {
     height: inherit;
 }
 
-
-
 #hostings-slider .hostings-slider {
+    margin: 0 auto;
+    height: 240px;
+    width: inherit;
     overflow-x: scroll;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    border-radius: var(--radius-level0);
+    display: flex;
+    flex: none;
+    scrollbar-width: none;
+}
+
+#hostings-slider .hostings-slider .hosting-wrap {
+    scroll-snap-align: center;
+    margin: 0 121px;
+}
+
+#hostings-slider .hostings-slider .hosting-wrap:first-of-type {
+    margin-left: 242px;
+}
+
+#hostings-slider .hostings-slider .hosting-wrap:last-of-type {
+    margin-right: 242px;
 }
 
 #hostings-slider .hostings-slider .hosting {
-    scroll-snap-align: center;
-    width: inherit;
-    height: fit-content;
-    margin: 0 40px;
+    padding: 24px 16px 32px 16px;
+    width: 508px;
+    height: 184px;
     border-radius: var(--radius-level0);
     background: var(--background-raise);
+}
+
+#hostings-slider .hostings-slider-controls {
+    width: 540px;
+    margin: 8px auto 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+#hostings-slider .hostings-slider-controls button {
+    width: calc(50% - 4px);
+}
+
+#hostings-slider .hostings-slider-controls button img {
+    width: 32px;
 }

@@ -13,6 +13,8 @@ HERE;
 
 include("elements/header.php");
 
+echo "<div class='placeholder-size'></div>";
+
 include("templates/elements/footer.php");
 
 echo <<<HERE
@@ -20,5 +22,5 @@ echo <<<HERE
 </html>
 HERE;
 
-$conn->close();
+unsetServer();
 ?>

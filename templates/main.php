@@ -22,5 +22,5 @@ echo <<<HERE
 </html>
 HERE;
 
-$conn->close();
+unsetServer();
 ?>
