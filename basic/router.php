@@ -37,7 +37,8 @@ case '/auth#reg':
     break;
 default:
     http_response_code(404);
-    echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "404.html", "footer.php" ], "Страница не найдена");
+    echo $constructor->constructPage([ "head.php", "header.php", "404.html", "footer.php" ], "Страница не найдена");
+    /* echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "footer.php" ], "Страница не найдена"); */
     break;
 }
 ?>

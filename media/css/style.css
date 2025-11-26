@@ -88,7 +88,8 @@ body {
     width: 1024px;
 }
 
-.placeholder-size {
+.placeholder-size,
+#rickroll {
     height: calc(100vh - 100px - 160px);
 }
 
@@ -302,8 +303,8 @@ a.footer-nav-link:active {
 /* Authentication */
 
 #auth {
-    margin-top: 200px;
-    height: calc(100vh - 200px - 100px - 160px);
+    margin-top: 50px;
+    height: calc(100vh - 50px - 100px - 160px);
 }
 
 #auth .container {

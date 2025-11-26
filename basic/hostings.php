@@ -4,15 +4,21 @@ namespace Server;
 class Hostings {
     private $hostings;
 
+
+
     public function __construct() {
         global $database;
         $query = "select * from `hostings`";
         $this->hostings = $database->returnQuery($query);
     }
 
+
+
     public function __unset($name) {
         unset($this->hostings);
     }
+
+
 
     public function returnHostings($purpose) {
         $output = "";

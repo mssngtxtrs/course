@@ -1,16 +1,6 @@
 <?php
 namespace Server;
 
-$_SESSION['user'] = [
-    'name' => "Тут должен быть логин",
-    'hash' => "123"
-];
-
-/* $user = [ */
-/*     "name" => "Тут должно быть имя", */
-/*     "id" => 0 */
-/* ]; */
-
 class Auth {
     private string $name;
     private array $credentials;
