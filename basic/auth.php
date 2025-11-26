@@ -24,13 +24,13 @@ class Auth {
         global $database;
 
         if ($raw_password) {
-            $password = password_hash($password, PASSWORD_DEFAULT);
+            return password_verify(
+                $password,
+                $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single")
+            );
+        } else {
+            return $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single") === $password;
         }
-
-        return password_verify(
-            $password,
-            $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single")
-        );
     }
 
 
@@ -49,37 +49,54 @@ class Auth {
 
 
     public function autoLogin() {
-        if (isset($_SESSION['login']) && isset($_SESSION['hash'])) {
+        if (isset($_SESSION['user']['login']) && isset($_SESSION['user']['hash'])) {
             if ($this->verifyPassword(
-                $_SESSION['hash'],
-                $this->getUserID($_SESSION['login'])
+                $_SESSION['user']['hash'],
+                $this->getUserID($_SESSION['user']['login'])
             )) {
                 global $database;
-                $this->name = $database->returnQuery("select `name` from `users` where `login` = '{$_SESSION['login']}'", "single");
-                $this->credentials = $database->returnQuery("select `login`, `email` from `users` where `login` = '{$_SESSION['login']}'");
+                $this->name = $database->returnQuery(
+                    "select `name` from `users` where `login` = ?",
+                    "single",
+                    [$_SESSION['user']['login']]
+                );
+                $this->credentials = $database->returnQuery(
+                    "select `login`, `email` from `users` where `login` = ?",
+                    "assoc",
+                    [$_SESSION['user']['login']]
+                );
+                $_SESSION['dbg'] = "auto-success";
             } else {
                 $this->name = "";
                 $this->credentials = [ 'login' => "", 'email' => "" ];
+                $_SESSION['dbg'] = "auto-failed-incorrect-password";
             }
         } else {
             $this->name = "";
             $this->credentials = [ 'login' => "", 'email' => "" ];
+            $_SESSION['dbg'] = "auto-failed-no-user";
         }
     }
 
 
     public function login(string $login, string $password): bool {
         global $database;
-        $userID = $database->returnQuery("select `userID` from `users` where `login` = '$login'", "single");
+        $userID = $database->returnQuery("select `userID` from `users` where `login` = ?", "single", [$login]);
 
         if ($userID) {
-            $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            if ($this->verifyPassword($password, $userID)) {
+            if ($this->verifyPassword($password, $userID, true)) {
                 $_SESSION['user']['login'] = $login;
-                $_SESSION['user']['password'] = $password_hash;
+                $_SESSION['user']['hash'] = $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single");
 
-                $this->name = $database->returnQuery("select `name` from `users` where `login` = '{$_SESSION['login']}'", "single");
-                $this->credentials = $database->returnQuery("select `login`, `email` from `users` where `login` = '{$_SESSION['login']}'");
+                $this->name = $database->returnQuery(
+                    "select `name` from `users` where `login` = ?",
+                    "single",
+                    [$_SESSION['user']['login']]
+                );
+                $this->credentials = $database->returnQuery(
+                    "select `login`, `email` from `users` where `login` = ?",
+                    "assoc",
+                    [$_SESSION['user']['login']]);
 
                 $_SESSION['msg'] = "login-success";
                 return true;
@@ -98,7 +115,11 @@ class Auth {
     public function register(array $credentials, string $password, string $password_confirm, string $consent): bool {
         global $database;
 
-        if ($database->returnQuery("select `login` from `users` where `login` = '{$credentials['login']}'") === null) {
+        if (!$database->returnQuery(
+            "select * from `users` where `login` = ?",
+            "bool",
+            [$credentials['login']]
+        )) {
             $_SESSION['error'] = "reg-failed-user-exists";
             return false;
         } else {
@@ -112,12 +133,23 @@ class Auth {
                 } else {
                     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-                    if ($database->prepareAndExecute(
+                    if ($database->returnQuery(
                         "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (?, ?, ?, ?, 0)",
-                        $credentials
-                    ) && $database->prepareAndExecute(
-                        "insert into `passwords` (`password`) values (?)",
-                        [$password_hash]
+                        "bool",
+                        /* $credentials */
+                        [
+                            $credentials['email'],
+                            $credentials['login'],
+                            $credentials['name'],
+                            $credentials['surname']
+                        ]
+                    ) && $database->returnQuery(
+                        "insert into `passwords` (`userID`, `password`) values (?, ?)",
+                        "bool",
+                        [
+                            $this->getUserID($credentials['login']),
+                            $password_hash
+                        ]
                     )) {
                         $_SESSION['msg'] = "reg-success";
                         return true;

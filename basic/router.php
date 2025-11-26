@@ -14,26 +14,56 @@ case '/hostings':
     echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Хостинги");
     break;
 case '/account':
-    if (empty($user['name'])) {
+    if (empty($_SESSION['user']['login'])) {
         header("Location: auth");
     } else {
         echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Личный кабинет");
     }
     break;
+case '/login':
+    /* echo "<pre>"; */
+    /* var_dump($_SESSION); */
+    /* unset($_SESSION['msg']); */
+    /* unset($_SESSION['error']); */
+    /* unset($_SESSION['dbg']); */
+
+    $auth->login(
+        $_POST['login'],
+        $_POST['password']
+    );
+
+    header("Location: account");
+    break;
+case '/reg':
+    /* echo "<pre>"; */
+    /* var_dump($_SESSION); */
+    /* unset($_SESSION['msg']); */
+    /* unset($_SESSION['error']); */
+    /* unset($_SESSION['dbg']); */
+
+    $auth->register(
+        [
+            'email' => $_POST['email'],
+            'login' => $_POST['login'],
+            'name' => $_POST['name'],
+            'surname' => $_POST['surname']
+        ],
+        $_POST['password'],
+        $_POST['password-confirm'],
+        $_POST['consent']
+    );
+
+    header("Location: account");
+    break;
 case '/auth':
-    if (!empty($user['name'])) {
+    if (!empty($_SESSION['user']['login'])) {
         header("Location: account");
     } else {
         echo $constructor->constructPage([ "head.php", "header.php", "auth.html", "footer.php" ], "Авторизация");
     }
     break;
-case '/auth#login':
-    $auth->login($_POST['login'], $_POST['password']);
-    header("Location: account");
-    break;
-case '/auth#reg':
-    $auth->register([$_POST['email'], $_POST['login'], $_POST['name'], $_POST['surname']], $_POST['password'], $_POST['password_confirm'], $_POST['consent']);
-    header("Location: account");
+case "/what":
+    echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "footer.php" ], "Страница не найдена");
     break;
 default:
     http_response_code(404);
