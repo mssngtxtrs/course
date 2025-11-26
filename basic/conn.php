@@ -13,6 +13,8 @@ class Database {
 
     private \mysqli $conn;
 
+
+
     public function __construct() {
         try {
             $this->conn = new \mysqli(
@@ -26,23 +28,55 @@ class Database {
         }
     }
 
+
+
     public function __unset($name) {
         $this->conn->close();
         unset($this->conn);
         unset($this->credentials);
     }
 
-    public function returnQuery($query) {
+
+
+    public function returnQuery(string $query, string $mode = "assoc") {
         $result = $this->conn->query($query);
         if ($this->conn->error) {
             $result->free();
             error_log("Error executing SQL query: " . $this->conn->error);
-            return null;
+            $output = false;
         } else {
-            $output = $result->fetch_all(MYSQLI_ASSOC);
+            /* $output = $result->fetch_all(MYSQLI_ASSOC); */
+            switch ($mode) {
+            case "bool":
+                if ($this->conn->affected_rows) {
+                    $output = true;
+                } else {
+                    $output = false;
+                }
+                break;
+            case "single":
+                $output = $result->fetch_column();
+                break;
+            case "assoc":
+            default:
+                $output = $result->fetch_all(MYSQLI_ASSOC);
+                break;
+            }
             $result->free();
             return $output;
         }
+    }
+
+
+
+    public function prepareAndExecute(string $query, array $params): bool {
+        $stmt = $this->conn->prepare($query);
+        foreach ($params as $param) {
+            $stmt->bind_param('s', $param);
+        }
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
     }
 }
 ?>

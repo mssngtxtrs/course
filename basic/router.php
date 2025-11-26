@@ -5,38 +5,39 @@ $root = $_SERVER['DOCUMENT_ROOT'];
 switch ($request) {
 case '':
 case '/':
-    require $root . '/templates/main.php';
+    echo $constructor->constructPage([ "head.php", "header.php", "banner.html", "advantages.html", "hostings-slider.php", "footer.php" ], "Главная страница");
     break;
 case '/about':
-    require $root . '/templates/about.php';
+    echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "О нас");
     break;
 case '/hostings':
-    require $root . '/templates/hostings.php';
+    echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Хостинги");
     break;
 case '/account':
     if (empty($user['name'])) {
-        header("Location: login");
+        header("Location: auth");
     } else {
-        require $root . '/templates/account.php';
+        echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Личный кабинет");
     }
     break;
-/* case '/login': */
-/*     if (!empty($user['name'])) { */
-/*         header("Location: account"); */
-/*     } else { */
-/*         require $root . '/templates/login.php'; */
-/*     } */
-/*     break; */
 case '/auth':
     if (!empty($user['name'])) {
         header("Location: account");
     } else {
-        require $root . '/templates/auth.php';
+        echo $constructor->constructPage([ "head.php", "header.php", "auth.html", "footer.php" ], "Авторизация");
     }
+    break;
+case '/auth#login':
+    $auth->login($_POST['login'], $_POST['password']);
+    header("Location: account");
+    break;
+case '/auth#reg':
+    $auth->register([$_POST['email'], $_POST['login'], $_POST['name'], $_POST['surname']], $_POST['password'], $_POST['password_confirm'], $_POST['consent']);
+    header("Location: account");
     break;
 default:
     http_response_code(404);
-    require $root . '/templates/404.php';
+    echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "404.html", "footer.php" ], "Страница не найдена");
     break;
 }
 ?>

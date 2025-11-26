@@ -2,7 +2,7 @@
     <div class="container">
         <h1>Наши хостинги</h1>
         <div class="hostings-slider">
-            <?php echo $hostings->returnHostings("slider"); ?>
+            <?= $hostings->returnHostings("slider") ?>
         </div>
         <div class="hostings-slider-controls">
             <button class="prev-button button"><img id="prev-button-icon" src="media/icons/prev.svg" alt="⮜"></button>
