@@ -4,6 +4,8 @@
             <a href="../../" class="logo">
                 <img src="../../media/placeholders/square-placeholder.svg" alt="<?php echo $website_name; ?>">
             </a>
+            <a href="loc?lang=ru" class="language" id="ru">Русский</a>
+            <a href="loc?lang=en" class="language" id="en">English</a>
         </div>
         <div class="column">
             <nav class="footer-nav">

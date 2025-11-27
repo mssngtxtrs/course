@@ -46,6 +46,12 @@ class Constructor {
 
 
 
+    public function setSessionLocale(string $locale) {
+        $_SESSION['locale'] = $locale;
+    }
+
+
+
     public function returnTemplate(string $template_name): string {
         global $hostings, $auth, $database;
         $path_to_template = $this->templates_folder . "/" . $template_name;

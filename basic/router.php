@@ -1,5 +1,5 @@
 <?php
-$request = $_SERVER['REQUEST_URI'];
+$request = preg_match('#^/loc\?#', $_SERVER['REQUEST_URI']) ? '/loc' : $_SERVER['REQUEST_URI'];
 
 switch ($request) {
 case '':
@@ -97,6 +97,13 @@ case '/reg':
     );
 
     header("Location: account");
+    break;
+
+
+
+case '/loc':
+    $constructor->setSessionLocale($_GET['lang']);
+    header("Location:./");
     break;
 
 

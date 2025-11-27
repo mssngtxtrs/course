@@ -12,7 +12,7 @@ $constructor = new Server\Constructor(
     website_name: "Название сайта",
     templates_folder: "templates",
     media_folder: "media",
-    locale: "ru",
+    locale: $_SESSION['locale'] ?? "ru",
     debug: false,
 );
 

@@ -17,9 +17,7 @@ class Dictionary {
 
 
     private function getDictionary(string $dictionary_name): array {
-        $dictionary_locale = $_SESSION['locale'] ?? $this->locale;
-
-        $dictionary_stream = fopen($this->dictionary_folder . '/' . $dictionary_locale . '/' . $dictionary_name . '.csv', "r");
+        $dictionary_stream = fopen($this->dictionary_folder . '/' . $this->locale . '/' . $dictionary_name . '.csv', "r");
         $output = [];
 
         while ($line = fgetcsv(stream: $dictionary_stream, separator: ",", enclosure: "'")) {
