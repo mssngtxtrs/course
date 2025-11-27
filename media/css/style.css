@@ -371,7 +371,7 @@ a.footer-nav-link:active {
 
 #not-found {
     margin-top: 200px;
-    height: calc(100vh - 200px - 100px - 160px);
+    height: calc(100vh - 200px - 140px - 160px);
 }
 
 #not-found .container {
