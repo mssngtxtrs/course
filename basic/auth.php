@@ -129,6 +129,13 @@ class Auth {
 
 
 
+    public function logout() {
+        unset($_SESSION['user']);
+        $_SESSION['msg']['std'][] = "logout";
+    }
+
+
+
     public function register(array $credentials, string $password, string $password_confirm, string $consent): bool {
         global $database;
 

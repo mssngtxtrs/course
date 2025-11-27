@@ -34,13 +34,19 @@ class Dictionary {
 
     public function getDictionaryString(string $lineName, string $dictionary): string {
         $output = "";
+        $found = false;
 
         foreach ($this->getDictionary($dictionary) as $line) {
             if ($line[0] == $lineName) {
                 $output = $line[1];
+                $found = true;
             }
         }
-            
+
+        if (!$found) {
+            $output = $lineName;
+        }
+
         return $output;
     }
 }

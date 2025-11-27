@@ -12,3 +12,4 @@
 'reg-failed-no-consent', 'Error: you didn`t gave your consent'
 'reg-failed-user-exists', 'Error: user with this login already exists'
 'reg-failed-empty-fields', 'Error: some fields are empty'
+'logout', 'You logged out'

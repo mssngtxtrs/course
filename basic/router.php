@@ -1,6 +1,5 @@
 <?php
 $request = $_SERVER['REQUEST_URI'];
-$root = $_SERVER['DOCUMENT_ROOT'];
 
 switch ($request) {
 case '':
@@ -11,6 +10,7 @@ case '/':
         true
     );
     break;
+
 case '/about':
     echo $constructor->constructPage(
         [ "head.php", "header.php", "footer.php" ],
@@ -18,6 +18,7 @@ case '/about':
         true
     );
     break;
+
 case '/hostings':
     echo $constructor->constructPage(
         [ "head.php", "header.php", "footer.php" ],
@@ -25,6 +26,7 @@ case '/hostings':
         true
     );
     break;
+
 case '/account':
     if (empty($_SESSION['user']['login'])) {
         header("Location: auth");
@@ -36,6 +38,21 @@ case '/account':
         );
     }
     break;
+
+case '/auth':
+    if (!empty($_SESSION['user']['login'])) {
+        header("Location: account");
+    } else {
+        echo $constructor->constructPage(
+            [ "head.php", "header.php", "auth.html", "footer.php" ],
+            "Авторизация",
+            true
+        );
+    }
+    break;
+
+
+
 case '/login':
     /* echo "<pre>"; */
     /* var_dump($_SESSION); */
@@ -50,10 +67,16 @@ case '/login':
 
     header("Location: account");
     break;
+
+
+
 case "/logout":
-    unset($_SESSION['user']);
+    $auth->logout();
     header("Location:./");
     break;
+
+
+
 case '/reg':
     /* echo "<pre>"; */
     /* var_dump($_SESSION); */
@@ -75,17 +98,9 @@ case '/reg':
 
     header("Location: account");
     break;
-case '/auth':
-    if (!empty($_SESSION['user']['login'])) {
-        header("Location: account");
-    } else {
-        echo $constructor->constructPage(
-            [ "head.php", "header.php", "auth.html", "footer.php" ],
-            "Авторизация",
-            true
-        );
-    }
-    break;
+
+
+
 case "/what":
     echo $constructor->constructPage(
         [ "head.php", "header.php", "rickroll.html", "footer.php" ],
@@ -93,6 +108,7 @@ case "/what":
         true
     );
     break;
+
 default:
     http_response_code(404);
     echo $constructor->constructPage(
