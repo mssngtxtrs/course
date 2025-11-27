@@ -2,14 +2,16 @@
 namespace Server;
 
 class Hostings {
-    private $hostings;
+    private array $hostings;
 
 
 
     public function __construct() {
         global $database;
-        $query = "select * from `hostings`";
-        $this->hostings = $database->returnQuery($query);
+        $this->hostings = $database->returnQuery(
+            "select * from `hostings`",
+            "assoc"
+        );
     }
 
 
@@ -24,7 +26,7 @@ class Hostings {
         $output = "";
         switch ($purpose) {
         case "slider":
-            if (!isset($this->hostings)) {
+            if (empty($this->hostings)) {
                 $output = <<<HERE
                 <div class="hosting-wrap">
                     <div class="hosting">

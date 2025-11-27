@@ -18,13 +18,18 @@
     --destructive-raise: #fb4934;
     --destructive-lower: #9d0006;
 
+    /* debug colors */
+    --debug: #d79921;
+    --debug-raise: #fabd2f;
+    --debug-lower: #b57614;
+
     /* font size */
     --font-size-heading1: 64px;
     --font-size-heading2: 36px;
     --font-size-subheadings: 16px;
     --font-size-text: 18px;
     --font-size-buttons: 16px;
-    --font-size-hints: 10px;
+    --font-size-hints: 14px;
 
     /* general radius */
     --radius-level0: 16px;
@@ -85,7 +90,7 @@ body {
 
 .container {
     margin-inline: auto;
-    width: 1024px;
+    max-width: 1024px;
 }
 
 .placeholder-size,
@@ -152,7 +157,8 @@ h2,
 h3,
 p,
 a,
-label {
+label,
+pre {
     color: var(--foreground);
     margin: 0;
 }
@@ -178,6 +184,12 @@ h3 {
 label {
     font-weight: 400;
     font-size: var(--font-size-buttons);
+}
+
+pre {
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+    font-weight: 400;
+    font-size: 11px;
 }
 
 a,
@@ -224,6 +236,9 @@ b.button:active {
 a.header-nav-link,
 a.footer-nav-link {
     text-decoration: none;
+}
+
+a.header-nav-link {
     margin-right: 12px;
 }
 
@@ -235,6 +250,7 @@ p.account {
 
 p.account {
     margin-bottom: 12px;
+    margin-right: 12px;
     font-size: 20px;
 }
 
@@ -273,6 +289,63 @@ a.footer-nav-link:active {
 
 
 
+/* Message handler */
+
+.messages {
+    position: fixed;
+    bottom: var(--radius-level0);
+    right: var(--radius-level0);
+}
+
+.messages div {
+    margin-top: var(--radius-level0);
+    padding: var(--radius-level0);
+    border-radius: var(--radius-level0);
+    background: var(--foreground);
+    color: var(--background);
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+    font-weight: 400;
+    font-size: var(--font-size-hints);
+    max-width: 540px;
+    transition: .3s;
+}
+
+.messages div:hover {
+    background: var(--foreground-raise);
+}
+
+.messages div:active {
+    background: var(--foreground-lower);
+}
+
+.messages div.debug {
+    background: var(--debug);
+    color: var(--foreground);
+}
+
+.messages div.debug:hover {
+    background: var(--debug-raise);
+}
+
+.messages div.debug:active {
+    background: var(--debug-lower);
+}
+
+.messages div.error {
+    background: var(--destructive);
+    color: var(--foreground);
+}
+
+.messages div.error:hover {
+    background: var(--destructive-raise);
+}
+
+.messages div.error:active {
+    background: var(--destructive-lower);
+}
+
+
+
 /* 404 */
 
 #not-found {
@@ -304,15 +377,20 @@ a.footer-nav-link:active {
 
 #auth {
     margin-top: 50px;
-    height: calc(100vh - 50px - 100px - 160px);
+    margin-bottom: 50px;
+    min-height: calc(100vh - 50px - 50px - 100px - 160px);
 }
 
 #auth .container {
-    max-width: 524px;
     background: var(--background-raise);
     border-radius: var(--radius-level0);
+    max-width: 540px;
+}
+
+#auth .container form {
+    max-width: 524px;
     padding: 8px;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
 }
@@ -335,11 +413,11 @@ a.footer-nav-link:active {
     width: 100%;
 }
 
-#auth .row:first-of-type .input {
+#auth #reg .row:first-of-type .input {
     width: calc(50% - 4px);
 }
 
-#auth label {
+#auth form label {
     margin: 12px 0 6px 0;
 }
 
@@ -380,13 +458,14 @@ a.footer-nav-link:active {
     height: 30px;
 }
 
-#auth .row:last-of-type .input {
+#auth #reg .row:last-of-type .input {
     flex-direction: row;
     align-items: center;
-    margin: 10px 0 10px 0;
+    /* margin: 10px 0 10px 0; */
+    margin-top: 10px;
 }
 
-#auth .row:last-of-type label {
+#auth #reg .row:last-of-type label {
     margin: 0 0 0 6px;
 }
 
@@ -413,6 +492,7 @@ a.footer-nav-link:active {
 }
 
 #auth input[type="submit"] {
+    margin-top: calc(20px + 12px + 6px);
     width: 100%;
     background: var(--foreground);
     color: var(--background);
@@ -424,6 +504,48 @@ a.footer-nav-link:active {
 
 #auth input[type="submit"]:active {
     background: var(--foreground-lower);
+}
+
+#auth .auth-switcher {
+    width: fit-content;
+    margin: 0 auto;
+    padding-top: 24px;
+    padding-bottom: 4px;
+    height: calc(80px - 24px - 4px);
+}
+
+#auth .auth-switcher button {
+    background: transparent;
+    border: none;
+    color: var(--foreground-lower2);
+    font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+    font-size: var(--font-size-subheadings);
+    font-weight: 700;
+    margin-left: 24px;
+    margin-top: 14.5px;
+    margin-bottom: 14.5px;
+    transition: .3s;
+    padding-bottom: 2px;
+}
+
+#auth .auth-switcher button:first-child {
+    margin-left: 0;
+}
+
+#auth .auth-switcher button:hover {
+    color: var(--foreground-lower);
+    margin-top: calc(14.5px / 2);
+    margin-bottom: calc(14.5px / 2);
+    font-size: calc(var(--font-size-subheadings) + (var(--font-size-heading2) - var(--font-size-subheadings)) / 2);
+}
+
+#auth .auth-switcher button.opened {
+    color: var(--foreground);
+    font-size: var(--font-size-heading2);
+    border-bottom: 2px solid var(--foreground);
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 

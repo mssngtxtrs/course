@@ -38,14 +38,15 @@ class Database {
 
 
 
-    public function returnQuery(string $query, string $mode = "assoc", array $params = []) {
+    public function returnQuery(string $query, string $mode = "assoc", array $params = []): mixed {
         $result = $this->conn->execute_query($query, $params);
+
+        $output = null;
+
         if ($this->conn->error) {
-            /* $result->free_result(); */
             error_log("Error executing SQL query: " . $this->conn->error);
             $output = false;
         } else {
-            /* $output = $result->fetch_all(MYSQLI_ASSOC); */
             switch ($mode) {
             case "bool":
                 if ($this->conn->affected_rows) {
@@ -62,9 +63,9 @@ class Database {
                 $output = $result->fetch_all(MYSQLI_ASSOC);
                 break;
             }
-            /* $result->free_result(); */
-            return $output;
         }
+
+        return $output;
     }
 }
 ?>

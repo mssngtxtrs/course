@@ -5,19 +5,35 @@ $root = $_SERVER['DOCUMENT_ROOT'];
 switch ($request) {
 case '':
 case '/':
-    echo $constructor->constructPage([ "head.php", "header.php", "banner.html", "advantages.html", "hostings-slider.php", "footer.php" ], "Главная страница");
+    echo $constructor->constructPage(
+        [ "head.php", "header.php", "banner.html", "advantages.html", "hostings-slider.php", "footer.php" ],
+        "Главная страница",
+        true
+    );
     break;
 case '/about':
-    echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "О нас");
+    echo $constructor->constructPage(
+        [ "head.php", "header.php", "footer.php" ],
+        "О нас",
+        true
+    );
     break;
 case '/hostings':
-    echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Хостинги");
+    echo $constructor->constructPage(
+        [ "head.php", "header.php", "footer.php" ],
+        "Хостинги",
+        true
+    );
     break;
 case '/account':
     if (empty($_SESSION['user']['login'])) {
         header("Location: auth");
     } else {
-        echo $constructor->constructPage([ "head.php", "header.php", "footer.php" ], "Личный кабинет");
+        echo $constructor->constructPage(
+            [ "head.php", "header.php", "footer.php" ],
+            "Личный кабинет",
+            true
+        );
     }
     break;
 case '/login':
@@ -33,6 +49,10 @@ case '/login':
     );
 
     header("Location: account");
+    break;
+case "/logout":
+    unset($_SESSION['user']);
+    header("Location:./");
     break;
 case '/reg':
     /* echo "<pre>"; */
@@ -59,16 +79,27 @@ case '/auth':
     if (!empty($_SESSION['user']['login'])) {
         header("Location: account");
     } else {
-        echo $constructor->constructPage([ "head.php", "header.php", "auth.html", "footer.php" ], "Авторизация");
+        echo $constructor->constructPage(
+            [ "head.php", "header.php", "auth.html", "footer.php" ],
+            "Авторизация",
+            true
+        );
     }
     break;
 case "/what":
-    echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "footer.php" ], "Страница не найдена");
+    echo $constructor->constructPage(
+        [ "head.php", "header.php", "rickroll.html", "footer.php" ],
+        "Страница не найдена",
+        true
+    );
     break;
 default:
     http_response_code(404);
-    echo $constructor->constructPage([ "head.php", "header.php", "404.html", "footer.php" ], "Страница не найдена");
-    /* echo $constructor->constructPage([ "head.php", "header.php", "rickroll.html", "footer.php" ], "Страница не найдена"); */
+    echo $constructor->constructPage(
+        [ "head.php", "header.php", "404.html", "footer.php" ],
+        "Страница не найдена",
+        true
+    );
     break;
 }
 ?>

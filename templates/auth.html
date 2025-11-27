@@ -1,25 +1,63 @@
 <section id="auth">
-    <form class="container" action="reg" method="post">
-        <h1>Регистрация</h1>
-        <div class="row">
-            <div class="input"><label for="name">Имя</label><input type="text" name="name" required></div>
-            <div class="input"><label for="surname">Фамилия</label><input type="text" name="surname" required></div>
+    <div class="container">
+        <div class="auth-switcher">
+            <button data-target="login">Вход</button>
+            <button data-target="reg">Регистрация</button>
         </div>
-        <div class="row">
-            <div class="input"><label for="login">Логин</label><input type="text" name="login" required></div>
+
+        <div class="forms">
+            <form action="login" id="login" method="post">
+                <div class="row">
+                    <div class="input"><label for="login">Логин</label><input type="text" name="login"></div>
+                </div>
+                <div class="row">
+                    <div class="input"><label for="password">Пароль</label><input type="password" name="password"></div>
+                </div>
+                <input type="submit" class="button urgent" value="Войти">
+            </form>
+
+            <form action="reg" id="reg" method="post">
+                <div class="row">
+                    <div class="input"><label for="name">Имя</label><input type="text" name="name" required></div>
+                    <div class="input"><label for="surname">Фамилия</label><input type="text" name="surname" required></div>
+                </div>
+                <div class="row">
+                    <div class="input"><label for="login">Логин</label><input type="text" name="login" required></div>
+                </div>
+                <div class="row">
+                    <div class="input"><label for="email">Почта</label><input type="email" name="email" required></div>
+                </div>
+                <div class="row">
+                    <div class="input"><label for="password">Пароль</label><input type="password" name="password" required></div>
+                </div>
+                <div class="row">
+                    <div class="input"><label for="password-confirm">Подтверждение пароля</label><input type="password" name="password-confirm" required></div>
+                </div>
+                <div class="row">
+                    <div class="input"><input type="checkbox" name="consent" required><label for="consent">Согласие на обработку персональных данных</label></div>
+                </div>
+                <input class="button urgent" type="submit" value="Зарегистрироваться">
+            </form>
         </div>
-        <div class="row">
-            <div class="input"><label for="email">Почта</label><input type="email" name="email" required></div>
-        </div>
-        <div class="row">
-            <div class="input"><label for="password">Пароль</label><input type="password" name="password" required></div>
-        </div>
-        <div class="row">
-            <div class="input"><label for="password-confirm">Подтверждение пароля</label><input type="password" name="password-confirm" required></div>
-        </div>
-        <div class="row">
-            <div class="input"><input type="checkbox" name="consent" required><label for="consent">Согласие на обработку персональных данных</label></div>
-        </div>
-        <input class="button urgent" type="submit" value="Зарегистрироваться">
-    </form>
+    </div>
 </section>
+
+<script>
+    const buttons = document.querySelectorAll('.auth-switcher button');
+    const forms = document.querySelectorAll('.forms form');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.target;
+
+            forms.forEach(f => f.style.display = 'none');
+            document.getElementById(id).style.display = 'flex';
+
+            buttons.forEach(b => b.classList.remove('opened'));
+            btn.classList.add('opened');
+        });
+    });
+
+    forms[0].style.display = 'flex';
+    buttons[0].classList.add('opened');
+</script>
