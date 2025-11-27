@@ -11,3 +11,5 @@
         </nav>
     </div>
 </header>
+
+<script src="media/js/header.js"></script>

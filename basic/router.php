@@ -44,8 +44,8 @@ case '/login':
     /* unset($_SESSION['dbg']); */
 
     $auth->login(
-        $_POST['login'],
-        $_POST['password']
+        $_POST['login'] ?? "",
+        $_POST['password'] ?? ""
     );
 
     header("Location: account");
@@ -63,14 +63,14 @@ case '/reg':
 
     $auth->register(
         [
-            'email' => $_POST['email'],
-            'login' => $_POST['login'],
-            'name' => $_POST['name'],
-            'surname' => $_POST['surname']
+            'email' => $_POST['email'] ?? "",
+            'login' => $_POST['login'] ?? "",
+            'name' => $_POST['name'] ?? "",
+            'surname' => $_POST['surname'] ?? ""
         ],
-        $_POST['password'],
-        $_POST['password-confirm'],
-        $_POST['consent']
+        $_POST['password'] ?? "",
+        $_POST['password-confirm'] ?? "",
+        $_POST['consent'] ?? ""
     );
 
     header("Location: account");

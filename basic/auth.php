@@ -93,32 +93,38 @@ class Auth {
         global $database;
         $userID = $database->returnQuery("select `userID` from `users` where `login` = ?", "single", [$login]);
 
-        if ($userID) {
-            if ($this->verifyPassword($password, $userID, true)) {
-                $_SESSION['user']['login'] = $login;
-                $_SESSION['user']['hash'] = $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single");
+        $output = false;
 
-                $this->name = $database->returnQuery(
-                    "select `name` from `users` where `login` = ?",
-                    "single",
-                    [$_SESSION['user']['login']]
-                );
-                $this->credentials = $database->returnQuery(
-                    "select `login`, `email` from `users` where `login` = ?",
-                    "assoc",
-                    [ $_SESSION['user']['login'] ]
-                );
+        if (!empty($password) && !empty($login)) {
+            if ($userID) {
+                if ($this->verifyPassword($password, $userID, true)) {
+                    $_SESSION['user']['login'] = $login;
+                    $_SESSION['user']['hash'] = $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single");
 
-                $_SESSION['msg']['std'][] = "login-success";
-                return true;
+                    $this->name = $database->returnQuery(
+                        "select `name` from `users` where `login` = ?",
+                        "single",
+                        [ $_SESSION['user']['login'] ]
+                    );
+                    $this->credentials = $database->returnQuery(
+                        "select `login`, `email` from `users` where `login` = ?",
+                        "assoc",
+                        [ $_SESSION['user']['login'] ]
+                    );
+
+                    $_SESSION['msg']['std'][] = "login-success";
+                    $output = true;
+                } else {
+                    $_SESSION['msg']['error'][] = "login-failed-incorrect-password";
+                }
             } else {
-                $_SESSION['msg']['error'][] = "login-failed-incorrect-password";
-                return false;
+                $_SESSION['msg']['error'][] = "login-failed-no-user";
             }
         } else {
-            $_SESSION['msg']['error'][] = "login-failed-no-user";
-            return false;
+            $_SESSION['msg']['error'][] = "login-failed-no-credentials";
         }
+
+        return $output;
     }
 
 
@@ -126,50 +132,54 @@ class Auth {
     public function register(array $credentials, string $password, string $password_confirm, string $consent): bool {
         global $database;
 
-        if ($database->returnQuery(
-            "select * from `users` where `login` = ?",
-            "bool",
-            [ $credentials['login'] ]
-        )) {
-            $_SESSION['msg']['error'][] = "reg-failed-user-exists";
-            return false;
-        } else {
-            if (!$consent) {
-                $_SESSION['msg']['error'][] = "reg-failed-no-consent";
-                return false;
-            } else {
-                if ($password !== $password_confirm) {
-                    $_SESSION['msg']['error'][] = "reg-failed-not-match";
-                    return false;
-                } else {
-                    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $output = false;
 
-                    if ($database->returnQuery(
-                        "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (?, ?, ?, ?, 0)",
-                        "bool",
-                        [
-                            $credentials['email'],
-                            $credentials['login'],
-                            $credentials['name'],
-                            $credentials['surname']
-                        ]
-                    ) && $database->returnQuery(
-                        "insert into `passwords` (`userID`, `password`) values (?, ?)",
-                        "bool",
-                        [
-                            $this->getUserID($credentials['login']),
-                            $password_hash
-                        ]
-                    )) {
-                        $_SESSION['msg']['std'][] = "reg-success";
-                        return true;
+        if (empty($credentials) || empty($password) || empty($password_confirm) || empty($consent)) {
+            $_SESSION['msg']['error'][] = "reg-failed-empty-fields";
+        } else {
+            if ($database->returnQuery(
+                "select * from `users` where `login` = ?",
+                "bool",
+                [ $credentials['login'] ]
+            )) {
+                $_SESSION['msg']['error'][] = "reg-failed-user-exists";
+            } else {
+                if (!$consent) {
+                    $_SESSION['msg']['error'][] = "reg-failed-no-consent";
+                } else {
+                    if ($password !== $password_confirm) {
+                        $_SESSION['msg']['error'][] = "reg-failed-not-match";
                     } else {
-                        $_SESSION['msg']['error'][] = "reg-failed-uncaught-sql";
-                        return false;
+                        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+                        if ($database->returnQuery(
+                            "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (?, ?, ?, ?, 0)",
+                            "bool",
+                            [
+                                $credentials['email'],
+                                $credentials['login'],
+                                $credentials['name'],
+                                $credentials['surname']
+                            ]
+                        ) && $database->returnQuery(
+                            "insert into `passwords` (`userID`, `password`) values (?, ?)",
+                            "bool",
+                            [
+                                $this->getUserID($credentials['login']),
+                                $password_hash
+                            ]
+                        )) {
+                            $_SESSION['msg']['std'][] = "reg-success";
+                            $output = true;
+                        } else {
+                            $_SESSION['msg']['error'][] = "reg-failed-uncaught-sql";
+                        }
                     }
                 }
             }
         }
+
+        return $output;
     }
 }
 ?>
