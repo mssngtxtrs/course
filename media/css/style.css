@@ -1,27 +1,46 @@
 /* Variables */
 
 :root {
+    /* basic colors */
+    --bg0: #1d2021;
+    --bg1: #282828;
+    --bg2: #32302f;
+    --bg3: #504945;
+
+    --fg0: #fbf1c7;
+    --fg1: #ebdbb2;
+    --fg2: #d5c4a1;
+    --fg3: #bdae93;
+
+    --red0: #9d0006;
+    --red1: #cc241d;
+    --red2: #fb4934;
+
+    --yellow0: #b57614;
+    --yellow1: #d79921;
+    --yellow2: #fabd2f;
+
     /* background colors */
-    --background: #282828;
-    --background-lower: #1d2021;
-    --background-raise: #32302f;
-    --background-raise2: #504945;
+    --background: var(--bg1);
+    --background-lower: var(--bg0);
+    --background-raise: var(--bg2);
+    --background-raise2: var(--bg3);
 
     /* foreground colors */
-    --foreground: #ebdbb2;
-    --foreground-lower: #d5c4a1;
-    --foreground-lower2: #bdae93;
-    --foreground-raise: #fbf1c7;
+    --foreground: var(--fg1);
+    --foreground-lower: var(--fg2);
+    --foreground-lower2: var(--fg3);
+    --foreground-raise: var(--fg0);
 
     /* destructive colors */
-    --destructive: #cc241d;
-    --destructive-raise: #fb4934;
-    --destructive-lower: #9d0006;
+    --destructive: var(--red1);
+    --destructive-raise: var(--red2);
+    --destructive-lower: var(--red0);
 
     /* debug colors */
-    --debug: #d79921;
-    --debug-raise: #fabd2f;
-    --debug-lower: #b57614;
+    --debug: var(--yellow1);
+    --debug-raise: var(--yellow2);
+    --debug-lower: var(--yellow0);
 
     /* font size */
     --font-size-heading1: 64px;
@@ -387,6 +406,10 @@ a.footer-nav-link:active {
     width: 540px;
 }
 
+#not-found h1 {
+    margin-bottom: 0;
+}
+
 #not-found p {
     margin-top: 75px;
     margin-bottom: 24px;
@@ -593,6 +616,10 @@ a.footer-nav-link:active {
     align-items: center;
 }
 
+#banner .column:first-child {
+    align-items: start;
+}
+
 #banner img {
     height: calc(300px - 16px);
     display: block;
@@ -616,18 +643,18 @@ a.footer-nav-link:active {
 
 #advantages .advantage {
     display: flex;
-    justify-content: space-between;
-    padding: 4px;
+    justify-content: left;
+    padding: 8px;
     background: var(--background-raise);
     border-radius: var(--radius-level0);
 }
 
 #advantages .advantage .icon {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     border-radius: 100%;
-    margin: 8px;
-    margin-right: 12px;
+    margin: 12px;
+    margin-right: 24px;
 }
 
 #advantages .advantage .icon img {

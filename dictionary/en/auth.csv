@@ -1,0 +1,13 @@
+'log-in-btn', 'Log in'
+'log-in', 'Log in'
+
+'register-btn', 'Register'
+'register', 'Register'
+
+'login', 'Login'
+'password', 'Password'
+'password-confirm', 'Confirm password'
+'email', 'Email'
+'consent', 'Consent to the processing of personal data'
+'name', 'First name'
+'surname', 'Last name'

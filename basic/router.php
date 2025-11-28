@@ -1,59 +1,64 @@
 <?php
-$request = preg_match('#^/loc\?#', $_SERVER['REQUEST_URI']) ? '/loc' : $_SERVER['REQUEST_URI'];
+$request = $_SERVER['REQUEST_URI'];
 
-switch ($request) {
-case '':
-case '/':
+switch (true) {
+case $request == '':
+case $request == '/':
     echo $constructor->constructPage(
-        [ "head.php", "header.php", "banner.html", "advantages.html", "hostings-slider.php", "footer.php" ],
-        "Главная страница",
+        [ "head", "header", "banner", "advantages", "hostings-slider", "footer" ],
+        $dictionary->getDictionaryString($request, "paths"),
         true
     );
+    $_SESSION['page_back'] = $request;
     break;
 
-case '/about':
+case $request == '/about':
     echo $constructor->constructPage(
-        [ "head.php", "header.php", "footer.php" ],
-        "О нас",
+        [ "head", "header", "footer" ],
+        $dictionary->getDictionaryString($request, "paths"),
         true
     );
+    $_SESSION['page_back'] = $request;
     break;
 
-case '/hostings':
+case $request == '/hostings':
     echo $constructor->constructPage(
-        [ "head.php", "header.php", "footer.php" ],
-        "Хостинги",
+        [ "head", "header", "footer" ],
+        $dictionary->getDictionaryString($request, "paths"),
         true
     );
+    $_SESSION['page_back'] = $request;
     break;
 
-case '/account':
-    if (empty($_SESSION['user']['login'])) {
+case $request == '/account':
+    if (!$auth->getLogInStatus()) {
         header("Location: auth");
     } else {
         echo $constructor->constructPage(
-            [ "head.php", "header.php", "footer.php" ],
-            "Личный кабинет",
+            [ "head", "header", "footer" ],
+            $dictionary->getDictionaryString($request, "paths"),
             true
         );
+        $_SESSION['page_back'] = $request;
     }
     break;
 
-case '/auth':
-    if (!empty($_SESSION['user']['login'])) {
+case $request == '/auth':
+    if ($auth->getLogInStatus()) {
         header("Location: account");
     } else {
         echo $constructor->constructPage(
-            [ "head.php", "header.php", "auth.html", "footer.php" ],
-            "Авторизация",
+            [ "head", "header", "auth", "footer" ],
+            $dictionary->getDictionaryString($request, "paths"),
             true
         );
+        $_SESSION['page_back'] = $request;
     }
     break;
 
 
 
-case '/login':
+case $request == '/login':
     /* echo "<pre>"; */
     /* var_dump($_SESSION); */
     /* unset($_SESSION['msg']); */
@@ -61,8 +66,8 @@ case '/login':
     /* unset($_SESSION['dbg']); */
 
     $auth->login(
-        $_POST['login'] ?? "",
-        $_POST['password'] ?? ""
+        $database->escape($_POST['login']) ?? "",
+        $database->escape($_POST['password']) ?? ""
     );
 
     header("Location: account");
@@ -70,14 +75,14 @@ case '/login':
 
 
 
-case "/logout":
+case $request == "/logout":
     $auth->logout();
-    header("Location:./");
+    header("Location: {$_SESSION['page_back']}");
     break;
 
 
 
-case '/reg':
+case $request == '/reg':
     /* echo "<pre>"; */
     /* var_dump($_SESSION); */
     /* unset($_SESSION['msg']); */
@@ -86,43 +91,45 @@ case '/reg':
 
     $auth->register(
         [
-            'email' => $_POST['email'] ?? "",
-            'login' => $_POST['login'] ?? "",
-            'name' => $_POST['name'] ?? "",
-            'surname' => $_POST['surname'] ?? ""
+            'email' => $database->escape($_POST['email']) ?? "",
+            'login' => $database->escape($_POST['login']) ?? "",
+            'name' => $database->escape($_POST['name']) ?? "",
+            'surname' => $database->escape($_POST['surname']) ?? ""
         ],
-        $_POST['password'] ?? "",
-        $_POST['password-confirm'] ?? "",
-        $_POST['consent'] ?? ""
+        $database->escape($_POST['password']) ?? "",
+        $database->escape($_POST['password-confirm']) ?? "",
+        $database->escape($_POST['consent']) ?? ""
     );
 
-    header("Location: account");
+    header("Location: {$_SESSION['page_back']}");
     break;
 
 
 
-case '/loc':
+case preg_match('#^/loc\?#', $request):
     $constructor->setSessionLocale($_GET['lang']);
-    header("Location:./");
+    header("Location: {$_SESSION['page_back']}");
     break;
 
 
 
-case "/what":
+case $request == "/what":
     echo $constructor->constructPage(
-        [ "head.php", "header.php", "rickroll.html", "footer.php" ],
-        "Страница не найдена",
+        [ "head", "header", "rickroll", "footer" ],
+        $dictionary->getDictionaryString($request, "paths"),
         true
     );
+    $_SESSION['page_back'] = $request;
     break;
 
 default:
     http_response_code(404);
     echo $constructor->constructPage(
-        [ "head.php", "header.php", "404.html", "footer.php" ],
-        "Страница не найдена",
+        [ "head", "header", "404", "footer" ],
+        $dictionary->getDictionaryString('404', "paths"),
         true
     );
+    $_SESSION['page_back'] = $request;
     break;
 }
 ?>

@@ -1,6 +1,6 @@
 <section id="hostings-slider">
     <div class="container">
-        <h1>Наши хостинги</h1>
+        <h1><?= $dictionary->getDictionaryString("hostings", "main") ?></h1>
         <div class="hostings-slider">
             <?= $hostings->returnHostings("slider") ?>
         </div>

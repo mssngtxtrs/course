@@ -1,0 +1,12 @@
+'name', 'Хостинг'
+'stat-max-users', 'Максимум пользователей'
+'stat-cpu', 'Процессор'
+'stat-ram', 'Оперативная память'
+'stat-ram-user', 'Пользовательский объём'
+'stat-ram-measurement', 'ГБ'
+'stat-disk', 'Объём диска'
+'stat-disk-user', 'Пользовательский объём'
+'stat-disk-measurement', 'ГБ'
+
+'empty', 'На данный момент хостингв нет'
+'empty-text', 'Но мы скоро это исправим!'

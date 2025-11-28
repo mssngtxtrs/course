@@ -48,13 +48,14 @@ class Constructor {
 
     public function setSessionLocale(string $locale) {
         $_SESSION['locale'] = $locale;
+        $_SESSION['msg']['std'][] = "language";
     }
 
 
 
     public function returnTemplate(string $template_name): string {
-        global $hostings, $auth, $database;
-        $path_to_template = $this->templates_folder . "/" . $template_name;
+        global $hostings, $auth, $database, $dictionary;
+        $path_to_template = $this->templates_folder . "/" . $template_name . ".php";
         ob_start();
         include $path_to_template;
         return ob_get_clean();

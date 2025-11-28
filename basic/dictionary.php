@@ -17,13 +17,21 @@ class Dictionary {
 
 
     private function getDictionary(string $dictionary_name): array {
-        $dictionary_stream = fopen($this->dictionary_folder . '/' . $this->locale . '/' . $dictionary_name . '.csv', "r");
         $output = [];
 
-        while ($line = fgetcsv(stream: $dictionary_stream, separator: ",", enclosure: "'")) {
-            $output[] = $line;
+        try {
+            if (file_exists($this->dictionary_folder . '/' . $this->locale . '/' . $dictionary_name . '.csv')) {
+                $dictionary_stream = fopen($this->dictionary_folder . '/' . $this->locale . '/' . $dictionary_name . '.csv', "r");
+                while ($line = fgetcsv(stream: $dictionary_stream, separator: ",", enclosure: "'")) {
+                    $output[] = $line;
+                }
+                fclose($dictionary_stream);
+            } else {
+                throw new \Exception("Dictionary file \"" . $dictionary_name . "\" not found");
+            }
+        } catch (\Exception $e) {
+            error_log("Error reading dictionary file: " . $e);
         }
-        fclose($dictionary_stream);
 
         return $output;
     }
@@ -34,7 +42,9 @@ class Dictionary {
         $output = "";
         $found = false;
 
-        foreach ($this->getDictionary($dictionary) as $line) {
+        $dictionary_content = $this->getDictionary($dictionary);
+
+        foreach ($dictionary_content as $line) {
             if ($line[0] == $lineName) {
                 $output = $line[1];
                 $found = true;
@@ -44,6 +54,7 @@ class Dictionary {
         if (!$found) {
             $output = $lineName;
         }
+
 
         return $output;
     }

@@ -38,21 +38,22 @@ class Database {
 
 
 
-    public function returnQuery(string $query, string $mode = "assoc", array $params = []): mixed {
-        $result = $this->conn->execute_query($query, $params);
+    public function returnQuery(string $query, string $mode = "assoc", array $params = []): bool|string|array {
+        $output = false;
 
-        $output = null;
+        try {
+            $result = $this->conn->execute_query($query, $params);
+        } catch (mysqli_sql_exception $e) {
+            error_log("Error executing SQL query: " . $e);
+        }
 
         if ($this->conn->error) {
             error_log("Error executing SQL query: " . $this->conn->error);
-            $output = false;
         } else {
             switch ($mode) {
             case "bool":
                 if ($this->conn->affected_rows) {
                     $output = true;
-                } else {
-                    $output = false;
                 }
                 break;
             case "single":
@@ -66,6 +67,12 @@ class Database {
         }
 
         return $output;
+    }
+
+
+
+    public function escape(string $data): string {
+        return $this->conn->real_escape_string(htmlspecialchars($data));
     }
 }
 ?>

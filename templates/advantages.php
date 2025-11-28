@@ -1,6 +1,6 @@
 <section id="advantages">
     <div class="container">
-        <h1>Почему мы?</h1>
+        <h1><?= $dictionary->getDictionaryString("advantages", "main") ?></h1>
         <div class="advantages-grid">
             <div class="advantage">
                 <div class="icon">
@@ -8,8 +8,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus labore dolore omnis, eius, quibusdam neque, velit nobis fugiat porro excepturi possimus! Libero reiciendis ex incidunt aspernatur cumque molestiae quasi. Laborum?</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-1", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-1-text", "main") ?></p>
                 </div>
             </div>
             <div class="advantage">
@@ -18,8 +18,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas adipisci repudiandae corrupti quis dignissimos reprehenderit officia sequi optio eum est nemo quidem accusantium, ex libero quaerat quod beatae magni ab.</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-2", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-2-text", "main") ?></p>
                 </div>
             </div>
             <div class="advantage">
@@ -28,8 +28,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi tenetur ad dolor officiis nostrum non vel. A doloribus sunt blanditiis sapiente, quis cum in, nostrum corrupti facere quibusdam nihil iure.</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-3", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-3-text", "main") ?></p>
                 </div>
             </div>
             <div class="advantage">
@@ -38,8 +38,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, voluptates repellendus. Facere incidunt fuga distinctio molestias reiciendis rem cumque vel doloremque laudantium voluptates ab, maiores tenetur! Quisquam deleniti rem totam!</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-4", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-4-text", "main") ?></p>
                 </div>
             </div>
             <div class="advantage">
@@ -48,8 +48,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, similique dicta, laborum nesciunt veniam eligendi hic alias esse est consectetur deserunt quis nobis delectus saepe! Perferendis possimus perspiciatis cumque minus!</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-5", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-5-text", "main") ?></p>
                 </div>
             </div>
             <div class="advantage">
@@ -58,8 +58,8 @@
                     <img src="../../media/placeholders/square-placeholder.svg" alt="Заглушка">
                 </div>
                 <div class="text-box">
-                    <h2>Заглушка</h2>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Autem blanditiis ipsa repudiandae hic itaque ex odio harum vel, vero adipisci, similique, vitae nobis dolor praesentium numquam. Accusamus sapiente laboriosam dolorum!</p>
+                    <h2><?= $dictionary->getDictionaryString("advantage-6", "main") ?></h2>
+                    <p><?=  $dictionary->getDictionaryString("advantage-6-text", "main") ?></p>
                 </div>
             </div>
 

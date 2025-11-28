@@ -2,13 +2,20 @@
 namespace Server;
 
 class Auth {
-    private string $name;
-    private array $credentials;
+    private bool $is_logged_in = false;
+    private array $credentials = [
+        'name' => "",
+        'login' => "",
+        'email' => ""
+    ];
 
 
 
-    public function __construct() {
-        $this->autoLogin();
+
+    public function __construct(bool $try_auto_login) {
+        if ($try_auto_login) {
+            $this->autoLogin();
+        }
     }
 
 
@@ -37,18 +44,41 @@ class Auth {
 
     private function getUserID(string $login): int {
         global $database;
-        return $database->returnQuery("select `userID` from `users` where `login` = '$login'", "single");
+        return $database->returnQuery(
+            "select `userID` from `users` where `login` = ?",
+            "single",
+            [ $login ]
+        );
+    }
+
+
+
+    public function getPermissionLevel(): int {
+        global $database;
+        return $database->returnQuery(
+            "select `permissionLevel` from `users` where `login` = ",
+            "single",
+            [ $this->credentials['login'] ]
+        );
     }
 
 
 
     public function getName(): string {
-        return $this->name;
+        return $this->credentials['name'];
     }
 
 
 
-    public function autoLogin() {
+    public function getLogInStatus(): bool {
+        return $this->is_logged_in;
+    }
+
+
+
+    public function autoLogin(): bool {
+        $output = false;
+
         if (isset($_SESSION['user']['login']) && isset($_SESSION['user']['hash'])) {
             global $database;
             if ($database->returnQuery(
@@ -60,33 +90,29 @@ class Auth {
                     $_SESSION['user']['hash'],
                     $this->getUserID($_SESSION['user']['login'])
                 )) {
-                    $this->name = $database->returnQuery(
-                        "select `name` from `users` where `login` = ?",
-                        "single",
-                        [ $_SESSION['user']['login'] ]
-                    );
-                    $this->credentials = $database->returnQuery(
-                        "select `login`, `email` from `users` where `login` = ?",
+                    if ($this->credentials = $database->returnQuery(
+                        "select `name`, `login`, `email` from `users` where `login` = ?",
                         "assoc",
                         [ $_SESSION['user']['login'] ]
-                    );
-                    $_SESSION['msg']['dbg'][] = "auto-success";
+                    )[0]) {
+                        $this->is_logged_in = true;
+                        $_SESSION['msg']['dbg'][] = "auto-success";
+                        $output = true;
+                    } else {
+                        $_SESSION['msg']['dbg'][] = "auto-failed-uncaught-sql";
+                    }
                 } else {
-                    $this->name = "";
-                    $this->credentials = [ 'login' => "", 'email' => "" ];
                     $_SESSION['msg']['dbg'][] = "auto-failed-incorrect-password";
                 }
             } else {
-                $this->name = "";
-                $this->credentials = [ 'login' => "", 'email' => "" ];
                 $_SESSION['msg']['dbg'][] = "auto-failed-no-user";
             }
         } else {
-            $this->name = "";
-            $this->credentials = [ 'login' => "", 'email' => "" ];
             $_SESSION['msg']['dbg'][] = "auto-failed-no-credentials";
         }
+        return $output;
     }
+
 
 
     public function login(string $login, string $password): bool {
@@ -101,19 +127,16 @@ class Auth {
                     $_SESSION['user']['login'] = $login;
                     $_SESSION['user']['hash'] = $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single");
 
-                    $this->name = $database->returnQuery(
-                        "select `name` from `users` where `login` = ?",
-                        "single",
-                        [ $_SESSION['user']['login'] ]
-                    );
-                    $this->credentials = $database->returnQuery(
-                        "select `login`, `email` from `users` where `login` = ?",
+                    if ($this->credentials = $database->returnQuery(
+                        "select `name`, `login`, `email` from `users` where `login` = ?",
                         "assoc",
                         [ $_SESSION['user']['login'] ]
-                    );
-
-                    $_SESSION['msg']['std'][] = "login-success";
-                    $output = true;
+                    )) {
+                        $_SESSION['msg']['std'][] = "login-success";
+                        $output = true;
+                    } else {
+                        $_SESSION['msg']['error'][] = "login-failed-uncaught-sql";
+                    }
                 } else {
                     $_SESSION['msg']['error'][] = "login-failed-incorrect-password";
                 }
@@ -123,7 +146,6 @@ class Auth {
         } else {
             $_SESSION['msg']['error'][] = "login-failed-no-credentials";
         }
-
         return $output;
     }
 
@@ -131,6 +153,8 @@ class Auth {
 
     public function logout() {
         unset($_SESSION['user']);
+        /* session_unset(); */
+        /* session_destroy(); */
         $_SESSION['msg']['std'][] = "logout";
     }
 
@@ -159,7 +183,7 @@ class Auth {
                     } else {
                         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-                        if ($database->returnQuery(
+                        if (!$database->returnQuery(
                             "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (?, ?, ?, ?, 0)",
                             "bool",
                             [
@@ -176,16 +200,15 @@ class Auth {
                                 $password_hash
                             ]
                         )) {
+                            $_SESSION['msg']['error'][] = "reg-failed-uncaught-sql";
+                        } else {
                             $_SESSION['msg']['std'][] = "reg-success";
                             $output = true;
-                        } else {
-                            $_SESSION['msg']['error'][] = "reg-failed-uncaught-sql";
                         }
                     }
                 }
             }
         }
-
         return $output;
     }
 }
