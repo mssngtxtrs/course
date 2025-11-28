@@ -1,12 +1,16 @@
 <section id="auth">
     <div class="container">
         <div class="auth-switcher">
-            <button data-target="login"><?= $dictionary->getDictionaryString("log-in-btn", "auth") ?></button>
-            <button data-target="reg"><?= $dictionary->getDictionaryString("register-btn", "auth") ?></button>
+            <div class="button-wrap">
+                <button data-target="login"><?= $dictionary->getDictionaryString("log-in-btn", "auth") ?></button>
+            </div>
+            <div class="button-wrap">
+                <button data-target="reg"><?= $dictionary->getDictionaryString("register-btn", "auth") ?></button>
+            </div>
         </div>
 
         <div class="forms">
-            <form action="login" id="login" method="post">
+            <form action="auth?action=log-in" id="login" method="post">
                 <div class="row">
                     <div class="input"><label for="login"><?= $dictionary->getDictionaryString("login", "auth") ?></label><input type="text" name="login" required></div>
                 </div>
@@ -16,7 +20,7 @@
                 <input type="submit" class="button urgent" value="<?= $dictionary->getDictionaryString("log-in", "auth") ?>">
             </form>
 
-            <form action="reg" id="reg" method="post">
+            <form action="auth?action=register" id="reg" method="post">
                 <div class="row">
                     <div class="input"><label for="name"><?= $dictionary->getDictionaryString("name", "auth") ?></label><input type="text" name="name" required></div>
                     <div class="input"><label for="surname"><?= $dictionary->getDictionaryString("surname", "auth") ?></label><input type="text" name="surname" required></div>

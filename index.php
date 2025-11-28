@@ -6,6 +6,7 @@ session_start();
 $global_flags = [
     'debug' => false,
     'try-auto-login' => true,
+    'show-messages' => true,
 ];
 
 require "basic/conn.php";

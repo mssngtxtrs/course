@@ -1,135 +1,132 @@
 <?php
 $request = $_SERVER['REQUEST_URI'];
+$path = parse_url($request, PHP_URL_PATH);
+$query = $_GET;
 
-switch (true) {
-case $request == '':
-case $request == '/':
+switch ($path) {
+
+
+
+case '':
+case '/':
     echo $constructor->constructPage(
         [ "head", "header", "banner", "advantages", "hostings-slider", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
-        true
+        $global_flags['show-messages']
     );
-    $_SESSION['page_back'] = $request;
     break;
 
-case $request == '/about':
+
+
+case '/about':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
-        true
+        $global_flags['show-messages']
     );
-    $_SESSION['page_back'] = $request;
     break;
 
-case $request == '/hostings':
+
+
+case '/hostings':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
-        true
+        $global_flags['show-messages']
     );
-    $_SESSION['page_back'] = $request;
     break;
 
-case $request == '/account':
+
+
+case '/account':
     if (!$auth->getLogInStatus()) {
         header("Location: auth");
     } else {
         echo $constructor->constructPage(
             [ "head", "header", "footer" ],
             $dictionary->getDictionaryString($request, "paths"),
-            true
+            $global_flags['show-messages']
         );
-        $_SESSION['page_back'] = $request;
-    }
-    break;
-
-case $request == '/auth':
-    if ($auth->getLogInStatus()) {
-        header("Location: account");
-    } else {
-        echo $constructor->constructPage(
-            [ "head", "header", "auth", "footer" ],
-            $dictionary->getDictionaryString($request, "paths"),
-            true
-        );
-        $_SESSION['page_back'] = $request;
     }
     break;
 
 
 
-case $request == '/login':
-    /* echo "<pre>"; */
-    /* var_dump($_SESSION); */
-    /* unset($_SESSION['msg']); */
-    /* unset($_SESSION['error']); */
-    /* unset($_SESSION['dbg']); */
+case '/auth':
+    switch ($query['action'] ?? '') {
+    case "log-in":
+        $auth->login(
+            $database->escape($_POST['login']) ?? "",
+            $database->escape($_POST['password']) ?? ""
+        );
+        header("Location: {$_SESSION['page_back']}");
+        break;
 
-    $auth->login(
-        $database->escape($_POST['login']) ?? "",
-        $database->escape($_POST['password']) ?? ""
-    );
+    case "register":
+        $auth->register(
+            [
+                'email' => $database->escape($_POST['email']) ?? "",
+                'login' => $database->escape($_POST['login']) ?? "",
+                'name' => $database->escape($_POST['name']) ?? "",
+                'surname' => $database->escape($_POST['surname']) ?? ""
+            ],
+            $database->escape($_POST['password']) ?? "",
+            $database->escape($_POST['password-confirm']) ?? "",
+            $database->escape($_POST['consent']) ?? ""
+        );
+        header("Location: {$_SESSION['page_back']}");
+        break;
 
-    header("Location: account");
+    case "log-out":
+        $auth->logout();
+        header("Location: {$_SESSION['page_back']}");
+        break;
+
+    case '':
+    default:
+        if ($auth->getLogInStatus()) {
+            header("Location: account");
+        } else {
+            echo $constructor->constructPage(
+                [ "head", "header", "auth", "footer" ],
+                $dictionary->getDictionaryString($request, "paths"),
+                $global_flags['show-messages']
+            );
+        }
+        break;
+    }
     break;
 
 
 
-case $request == "/logout":
-    $auth->logout();
+case '/loc':
+    $constructor->setSessionLocale($query['lang'] ?? 'ru');
     header("Location: {$_SESSION['page_back']}");
     break;
 
 
 
-case $request == '/reg':
-    /* echo "<pre>"; */
-    /* var_dump($_SESSION); */
-    /* unset($_SESSION['msg']); */
-    /* unset($_SESSION['error']); */
-    /* unset($_SESSION['dbg']); */
-
-    $auth->register(
-        [
-            'email' => $database->escape($_POST['email']) ?? "",
-            'login' => $database->escape($_POST['login']) ?? "",
-            'name' => $database->escape($_POST['name']) ?? "",
-            'surname' => $database->escape($_POST['surname']) ?? ""
-        ],
-        $database->escape($_POST['password']) ?? "",
-        $database->escape($_POST['password-confirm']) ?? "",
-        $database->escape($_POST['consent']) ?? ""
-    );
-
-    header("Location: {$_SESSION['page_back']}");
-    break;
-
-
-
-case preg_match('#^/loc\?#', $request):
-    $constructor->setSessionLocale($_GET['lang']);
-    header("Location: {$_SESSION['page_back']}");
-    break;
-
-
-
-case $request == "/what":
+case '/what':
     echo $constructor->constructPage(
         [ "head", "header", "rickroll", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
-        true
+        $global_flags['show-messages']
     );
-    $_SESSION['page_back'] = $request;
     break;
+
+
 
 default:
     http_response_code(404);
     echo $constructor->constructPage(
         [ "head", "header", "404", "footer" ],
         $dictionary->getDictionaryString('404', "paths"),
-        true
+        $global_flags['show-messages']
     );
-    $_SESSION['page_back'] = $request;
     break;
 }
+
+
+
+$_SESSION['page_back'] = $request;
 ?>

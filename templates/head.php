@@ -5,5 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $this->page_name ?> :: <?= $this->website_name ?></title>
     <link rel="stylesheet" href="<?= $this->media_folder ?>/css/style.css">
+    <link rel="icon" type="image/x-icon" href="media/placeholders/square-placeholder.svg">
 </head>
 <body>
