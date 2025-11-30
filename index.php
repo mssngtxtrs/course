@@ -17,9 +17,10 @@ require "basic/messages.php";
 require "basic/dictionary.php";
 
 $constructor = new Server\Constructor(
-    website_name: "Название сайта",
+    website_name: "Курсач",
     templates_folder: "templates",
     media_folder: "media",
+    available_locales: [ "en", "ru" ],
     locale: $_SESSION['locale'] ?? "ru",
     debug: $global_flags['debug'],
 );

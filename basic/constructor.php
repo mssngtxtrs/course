@@ -6,16 +6,18 @@ class Constructor {
     private string $website_name;
     private string $media_folder;
     private string $page_name;
+    private array $available_locales;
     private string $locale;
     private bool $debug;
 
 
 
-    public function __construct(string $website_name, string $templates_folder = "templates", string $media_folder = "media", string $locale = "en", bool $debug = false) {
+    public function __construct(string $website_name, string $templates_folder = "templates", string $media_folder = "media", array $available_locales = [ "en" ], string $locale = "en", bool $debug = false) {
         $this->templates_folder = $templates_folder;
         $this->website_name = $website_name;
         $this->media_folder = $media_folder;
         $this->page_name = "";
+        $this->available_locales = $available_locales;
         $this->locale = $locale;
         $this->debug = $debug;
     }
@@ -47,8 +49,21 @@ class Constructor {
 
 
     public function setSessionLocale(string $locale) {
-        $_SESSION['locale'] = $locale;
-        $_SESSION['msg']['std'][] = "language";
+        $found = false;
+
+        foreach ($this->available_locales as $available_locale) {
+            if ($locale == $available_locale) {
+                $_SESSION['locale'] = $locale;
+                $found = true;
+                $_SESSION['msg']['std'][] = "language";
+                break;
+            }
+        }
+
+        if (!$found) {
+            $_SESSION['locale'] = $this->locale;
+            $_SESSION['msg']['error'][] = "language-failed";
+        }
     }
 
 

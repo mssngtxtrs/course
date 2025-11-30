@@ -612,13 +612,17 @@ a.footer-nav-link:active {
     align-items: center;
 }
 
-#banner .column {
-    width: calc(50% - 16px);
-    padding: 8px;
+#banner .column,
+#banner-2 .container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+}
+
+#banner .column {
+    width: calc(50% - 16px);
+    padding: 8px;
 }
 
 #banner .column:first-child {
@@ -631,11 +635,13 @@ a.footer-nav-link:active {
     margin: auto;
 }
 
-#banner h1 {
+#banner h1,
+#banner-2 h1 {
     margin-bottom: 16px;
 }
 
-#banner p {
+#banner p,
+#banner-2 p {
     width: 100%;
     margin-bottom: 24px;
 }
@@ -719,4 +725,19 @@ a.footer-nav-link:active {
 #hostings-slider .hostings-slider-controls button:disabled {
     background: var(--background);
     border-color: var(--background);
+}
+
+#banner-2 {
+    height: 500px;
+}
+
+#banner-2 .container {
+    max-width: 540px;
+    height: inherit;
+    justify-content: center;
+}
+
+#banner-2 h1,
+#banner-2 p {
+    text-align: center;
 }

@@ -10,7 +10,7 @@ switch ($path) {
 case '':
 case '/':
     echo $constructor->constructPage(
-        [ "head", "header", "banner", "advantages", "hostings-slider", "footer" ],
+        [ "head", "header", "banner", "advantages", "hostings-slider", "banner-2", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
         $global_flags['show-messages']
     );
@@ -100,7 +100,7 @@ case '/auth':
 
 
 case '/loc':
-    $constructor->setSessionLocale($query['lang'] ?? 'ru');
+    $constructor->setSessionLocale($query['lang'] ?? '');
     header("Location: {$_SESSION['page_back']}");
     break;
 

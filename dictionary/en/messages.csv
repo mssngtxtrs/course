@@ -16,3 +16,4 @@
 'reg-failed-empty-fields', 'Error: some fields are empty'
 'logout', 'You logged out'
 'language', 'Language changed'
+'language-failed', 'Failed changing language'
