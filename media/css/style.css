@@ -715,3 +715,8 @@ a.footer-nav-link:active {
 #hostings-slider .hostings-slider-controls button img {
     width: 32px;
 }
+
+#hostings-slider .hostings-slider-controls button:disabled {
+    background: var(--background);
+    border-color: var(--background);
+}

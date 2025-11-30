@@ -1,35 +1,49 @@
 const slider = document.querySelector('.hostings-slider');
-const prevButton = document.querySelector('.prev-button');
-const nextButton = document.querySelector('.next-button');
+const prevButton = document.querySelector('.hostings-slider-controls .prev-button');
+const nextButton = document.querySelector('.hostings-slider-controls .next-button');
 
-// const prevButtonIcon = document.getElementById('prev-button-icon');
-// const nextButtonIcon = document.getElementById('next-button-icon');
+const sliderScroll = slider.scrollLeft;
+const sliderWidth = slider.clientWidth;
+const sliderScrollEnd = slider.scrollWidth;
 
-// const max = document.getElementsByClassName('.hosting').length;
-// var index = 0;
+let sliderPosition = sliderScroll;
+
+function checkScroll(direction) {
+    switch (direction) {
+        case "left":
+            sliderPosition -= sliderWidth;
+            break;
+        case "right":
+            sliderPosition += sliderWidth;
+            break;
+    }
+
+    // console.log("sliderPosition: " + sliderPosition + "\n( + " + sliderWidth + " = " + (sliderPosition + sliderWidth) + " )\n( - " + sliderWidth + " = " + (sliderPosition - sliderWidth) + " )" + "\nsliderScroll: " + sliderScroll + "\nsliderWidth: " + sliderWidth + "\nsliderScrollEnd: " + sliderScrollEnd);
+
+    prevButton.disabled = false;
+    nextButton.disabled = false;
+
+    if (sliderPosition <= 0) {
+        prevButton.disabled = true;
+    }
+
+    if (sliderPosition + sliderWidth >= sliderScrollEnd) {
+        nextButton.disabled = true;
+    }
+}
 
 prevButton.addEventListener('click', () => {
     slider.scrollBy({
-        left: -1024,
+        left: -sliderWidth,
     });
-    /* if (index === 0) { */
-    /*     prevButtonIcon.style.setProperty("opacity", "0.5"); */
-    /* } else { */
-    /*     nextButtonIcon.style.setProperty("opacity", "1"); */
-    /*     prevButtonIcon.style.setProperty("opacity", "1"); */
-    /*     index += 1; */
-    /* } */
+    checkScroll("left");
 });
 
 nextButton.addEventListener('click', () => {
     slider.scrollBy({
-        left: 1024,
+        left: sliderWidth,
     });
-    /* if (index === max) { */
-    /*     nextButtonIcon.style.setProperty("opacity", "0.5"); */
-    /* } else { */
-    /*     prevButtonIcon.style.setProperty("opacity", "1"); */
-    /*     nextButtonIcon.style.setProperty("opacity", "1"); */
-    /*     index -= 1; */
-    /* } */
+    checkScroll("right");
 });
+
+checkScroll("still");
