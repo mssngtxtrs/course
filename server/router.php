@@ -3,42 +3,51 @@ $request = $_SERVER['REQUEST_URI'];
 $path = parse_url($request, PHP_URL_PATH);
 $query = $_GET;
 
-switch ($path) {
+/* echo "<pre>"; */
+/* var_dump($request); */
+/* var_dump($path); */
+/* var_dump($query); */
+/* echo "</pre>"; */
+
+switch (true) {
 
 
 
-case '':
-case '/':
+case $path == '':
+case $path == '/':
     echo $constructor->constructPage(
         [ "head", "header", "banner", "advantages", "hostings-slider", "banner-2", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
         $global_flags['show-messages']
     );
+    $_SESSION['page_back'] = $request;
     break;
 
 
 
-case '/about':
+case $path == '/about':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
         $global_flags['show-messages']
     );
+    $_SESSION['page_back'] = $request;
     break;
 
 
 
-case '/hostings':
+case $path == '/hostings':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
         $global_flags['show-messages']
     );
+    $_SESSION['page_back'] = $request;
     break;
 
 
 
-case '/account':
+case $path == '/account':
     if (!$auth->getLogInStatus()) {
         header("Location: auth");
     } else {
@@ -47,12 +56,24 @@ case '/account':
             $dictionary->getDictionaryString($request, "paths"),
             $global_flags['show-messages']
         );
+        $_SESSION['page_back'] = $request;
     }
     break;
 
 
 
-case '/auth':
+case $path == '/reservation':
+    echo $constructor->constructPage(
+        [ "head", "header", "footer" ],
+        $dictionary->getDictionaryString($request, "paths"),
+        $global_flags['show-messages']
+    );
+    $_SESSION['page_back'] = $request;
+    break;
+
+
+
+case $path == '/auth':
     switch ($query['action'] ?? '') {
     case "log-in":
         $auth->login(
@@ -92,6 +113,7 @@ case '/auth':
                 $dictionary->getDictionaryString($request, "paths"),
                 $global_flags['show-messages']
             );
+            $_SESSION['page_back'] = $request;
         }
         break;
     }
@@ -99,19 +121,54 @@ case '/auth':
 
 
 
-case '/loc':
+case $path == '/loc':
     $constructor->setSessionLocale($query['lang'] ?? '');
     header("Location: {$_SESSION['page_back']}");
     break;
 
 
 
-case '/what':
+case preg_match('#^/api/.*$#', $path):
+    switch ($path) {
+    case "/api/hostings":
+        switch ($query['method'] ?? "") {
+        case "slider":
+            header("Content-Type: text/html");
+            echo $hostings->returnData("slider");
+            break;
+        case "serialized":
+            header("Content-Type: text/plain");
+            echo $hostings->returnData("serialized");
+            break;
+        case "json":
+        default:
+            header("Content-Type: application/json");
+            echo json_encode([
+                'status' => 'ok',
+                'content' => $hostings->returnData()
+            ]);
+            break;
+        }
+        break;
+    case "/api/messages":
+        header("Content-Type: application/json");
+        echo json_encode([
+            'status' => 'ok',
+            'content' => $message_handler->returnMessages($global_flags['debug'])
+        ]);
+        break;
+    }
+    break;
+
+
+
+case $path == '/what':
     echo $constructor->constructPage(
         [ "head", "header", "rickroll", "footer" ],
         $dictionary->getDictionaryString($request, "paths"),
         $global_flags['show-messages']
     );
+    $_SESSION['page_back'] = $request;
     break;
 
 
@@ -123,10 +180,10 @@ default:
         $dictionary->getDictionaryString('404', "paths"),
         $global_flags['show-messages']
     );
+    $_SESSION['page_back'] = $request;
     break;
 }
 
 
 
-$_SESSION['page_back'] = $request;
 ?>

@@ -1,13 +1,3 @@
-const slider = document.querySelector('.hostings-slider');
-const prevButton = document.querySelector('.hostings-slider-controls .prev-button');
-const nextButton = document.querySelector('.hostings-slider-controls .next-button');
-
-const sliderScroll = slider.scrollLeft;
-const sliderWidth = slider.clientWidth;
-const sliderScrollEnd = slider.scrollWidth;
-
-let sliderPosition = sliderScroll;
-
 function checkScroll(direction) {
     switch (direction) {
         case "left":
@@ -17,8 +7,6 @@ function checkScroll(direction) {
             sliderPosition += sliderWidth;
             break;
     }
-
-    // console.log("sliderPosition: " + sliderPosition + "\n( + " + sliderWidth + " = " + (sliderPosition + sliderWidth) + " )\n( - " + sliderWidth + " = " + (sliderPosition - sliderWidth) + " )" + "\nsliderScroll: " + sliderScroll + "\nsliderWidth: " + sliderWidth + "\nsliderScrollEnd: " + sliderScrollEnd);
 
     prevButton.disabled = false;
     nextButton.disabled = false;
@@ -32,12 +20,53 @@ function checkScroll(direction) {
     }
 }
 
+function buildSlider() {
+    fetch("/api/hostings?method=slider")
+        .then(response => {
+            if (!response) throw new Error("No response from server");
+            return response.text();
+        })
+        .then(html => {
+            slider.innerHTML = html;
+        })
+        .then(() => {
+            sliderScroll = slider.scrollLeft;
+            sliderWidth = slider.clientWidth;
+            sliderScrollEnd = slider.scrollWidth;
+        })
+        .then(() => {
+            checkScroll("still");
+        })
+        .catch(err => {
+            console.error('Failed getting slider content: ', err);
+            slider.innerHTML = "Error getting slider content";
+        });
+}
+
+
+
+
+
+const slider = document.querySelector('.hostings-slider');
+const prevButton = document.querySelector('.hostings-slider-controls .prev-button');
+const nextButton = document.querySelector('.hostings-slider-controls .next-button');
+
+let sliderScroll = slider.scrollLeft;
+let sliderWidth = slider.clientWidth;
+let sliderScrollEnd = slider.scrollWidth;
+let sliderPosition = sliderScroll;
+
+
+buildSlider();
+
+
 prevButton.addEventListener('click', () => {
     slider.scrollBy({
         left: -sliderWidth,
     });
     checkScroll("left");
 });
+
 
 nextButton.addEventListener('click', () => {
     slider.scrollBy({
@@ -46,4 +75,3 @@ nextButton.addEventListener('click', () => {
     checkScroll("right");
 });
 
-checkScroll("still");

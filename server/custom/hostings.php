@@ -1,14 +1,14 @@
 <?php
-namespace Server;
+namespace Server\Custom;
 
 class Hostings {
-    private array $hostings;
+    private array $data_container;
 
 
 
     public function __construct() {
         global $database;
-        $this->hostings = $database->returnQuery(
+        $this->data_container = $database->returnQuery(
             "select * from `hostings`",
             "assoc"
         );
@@ -16,20 +16,14 @@ class Hostings {
 
 
 
-    public function __unset($name) {
-        unset($this->hostings);
-    }
-
-
-
-    public function returnHostings($purpose) {
+    public function returnData($purpose): string {
         global $dictionary;
 
         $output = "";
 
         switch ($purpose) {
         case "slider":
-            if (empty($this->hostings)) {
+            if (empty($this->data_container)) {
                 $output = <<<HERE
                 <div class="hosting-wrap">
                     <div class="hosting">
@@ -39,7 +33,7 @@ class Hostings {
                 </div>
                 HERE;
             } else {
-                foreach ($this->hostings as $hosting) {
+                foreach ($this->data_container as $hosting) {
                     $ram = $hosting['ram'] / 1024;
                     $ram_per_user = $hosting['ramUser'] / 1024;
                     $disk = $hosting['diskSpace'] / 1024;
@@ -61,15 +55,20 @@ class Hostings {
                 }
             }
 
-            return $output;
-            break;
-        case "list":
-
             break;
         case "raw":
-
+            $output = $this->data_container;
+            break;
+        case "serialized":
+            $output = serialize($this->data_container);
+            break;
+        case "json":
+        default:
+            $output = json_encode($this->data_container);
             break;
         }
+
+        return $output;
     }
 }
 ?>

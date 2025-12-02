@@ -9,12 +9,13 @@ $global_flags = [
     'show-messages' => true,
 ];
 
-require "basic/conn.php";
-require "basic/auth.php";
-require "basic/hostings.php";
-require "basic/constructor.php";
-require "basic/messages.php";
-require "basic/dictionary.php";
+require "server/basic/conn.php";
+require "server/basic/auth.php";
+require "server/basic/constructor.php";
+require "server/basic/messages.php";
+require "server/basic/dictionary.php";
+
+require "server/custom/hostings.php";
 
 $constructor = new Server\Constructor(
     website_name: "Курсач",
@@ -31,12 +32,12 @@ $auth = new Server\Auth(
     try_auto_login: $global_flags['try-auto-login']
 );
 
-$hostings = new Server\Hostings();
+$hostings = new Server\Custom\Hostings();
 $message_handler = new Server\Messages();
 
 $dictionary = new Server\Dictionary(
     dictionary_folder: "dictionary"
 );
 
-require "basic/router.php";
+require "server/router.php";
 ?>

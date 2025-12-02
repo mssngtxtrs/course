@@ -1,9 +1,7 @@
 <section id="hostings-slider">
     <div class="container">
         <h1><?= $dictionary->getDictionaryString("hostings", "main") ?></h1>
-        <div class="hostings-slider">
-            <?= $hostings->returnHostings("slider") ?>
-        </div>
+        <div class="hostings-slider" id="hostings-container"></div>
         <div class="hostings-slider-controls">
             <button class="prev-button button"><img id="prev-button-icon" src="media/icons/prev.svg" alt="⮜"></button>
             <button class="next-button button"><img id="next-button-icon" src="media/icons/next.svg" alt="⮞"></button>

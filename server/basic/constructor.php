@@ -88,7 +88,7 @@ class Constructor {
         }
 
         if ($show_messages) {
-            $page .= $message_handler->showMessages($this->debug);
+            $page .= $message_handler->showMessagesHandler();
         }
 
         return $page;

@@ -70,5 +70,33 @@ class Messages {
 
         return $output;
     }
+
+
+
+    public function showMessagesHandler() {
+        $output = "<div class='messages'>";
+        $output .= "</div>";
+        $output .= "<script src='media/js/messages-handler.js'></script>";
+        return $output;
+    }
+
+
+
+    public function returnMessages(bool $debug = false): array {
+        global $dictionary;
+
+        $output = [];
+
+        $messages = $this->getMessages($debug);
+
+        foreach ($messages as $message) {
+            $output[] = [
+                'message' => $dictionary->getDictionaryString($message['message'], "messages"),
+                'type' => $message['type']
+            ];
+        }
+
+        return $output;
+    }
 }
 ?>
