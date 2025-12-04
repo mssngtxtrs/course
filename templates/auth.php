@@ -10,7 +10,7 @@
         </div>
 
         <div class="forms">
-            <form action="auth?action=log-in" id="login" method="post">
+            <form action="api/auth?action=log-in" id="login" method="post">
                 <div class="row">
                     <div class="input"><label for="login"><?= $dictionary->getDictionaryString("login", "auth") ?></label><input type="text" name="login" required></div>
                 </div>
@@ -20,7 +20,7 @@
                 <input type="submit" class="button urgent" value="<?= $dictionary->getDictionaryString("log-in", "auth") ?>">
             </form>
 
-            <form action="auth?action=register" id="reg" method="post">
+            <form action="api/auth?action=register" id="reg" method="post">
                 <div class="row">
                     <div class="input"><label for="name"><?= $dictionary->getDictionaryString("name", "auth") ?></label><input type="text" name="name" required></div>
                     <div class="input"><label for="surname"><?= $dictionary->getDictionaryString("surname", "auth") ?></label><input type="text" name="surname" required></div>

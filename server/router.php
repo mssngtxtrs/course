@@ -63,59 +63,30 @@ case $path == '/account':
 
 
 case $path == '/reservation':
-    echo $constructor->constructPage(
-        [ "head", "header", "footer" ],
-        $dictionary->getDictionaryString($request, "paths"),
-        $global_flags['show-messages']
-    );
-    $_SESSION['page_back'] = $request;
+    if (!$auth->getLogInStatus()) {
+        header("Location: auth");
+    } else {
+        echo $constructor->constructPage(
+            [ "head", "header", "footer" ],
+            $dictionary->getDictionaryString($request, "paths"),
+            $global_flags['show-messages']
+        );
+        $_SESSION['page_back'] = $request;
+    }
     break;
 
 
 
 case $path == '/auth':
-    switch ($query['action'] ?? '') {
-    case "log-in":
-        $auth->login(
-            $database->escape($_POST['login']) ?? "",
-            $database->escape($_POST['password']) ?? ""
+    if ($auth->getLogInStatus()) {
+        header("Location: account");
+    } else {
+        echo $constructor->constructPage(
+            [ "head", "header", "auth", "footer" ],
+            $dictionary->getDictionaryString($request, "paths"),
+            $global_flags['show-messages']
         );
-        header("Location: {$_SESSION['page_back']}");
-        break;
-
-    case "register":
-        $auth->register(
-            [
-                'email' => $database->escape($_POST['email']) ?? "",
-                'login' => $database->escape($_POST['login']) ?? "",
-                'name' => $database->escape($_POST['name']) ?? "",
-                'surname' => $database->escape($_POST['surname']) ?? ""
-            ],
-            $database->escape($_POST['password']) ?? "",
-            $database->escape($_POST['password-confirm']) ?? "",
-            $database->escape($_POST['consent']) ?? ""
-        );
-        header("Location: {$_SESSION['page_back']}");
-        break;
-
-    case "log-out":
-        $auth->logout();
-        header("Location: {$_SESSION['page_back']}");
-        break;
-
-    case '':
-    default:
-        if ($auth->getLogInStatus()) {
-            header("Location: account");
-        } else {
-            echo $constructor->constructPage(
-                [ "head", "header", "auth", "footer" ],
-                $dictionary->getDictionaryString($request, "paths"),
-                $global_flags['show-messages']
-            );
-            $_SESSION['page_back'] = $request;
-        }
-        break;
+        $_SESSION['page_back'] = $request;
     }
     break;
 
@@ -129,6 +100,12 @@ case $path == '/loc':
 
 
 case preg_match('#^/api/.*$#', $path):
+    $output = [
+        'status' => "failed",
+        'action' => null,
+        'output' => null
+    ];
+
     switch ($path) {
     case "/api/hostings":
         switch ($query['method'] ?? "") {
@@ -143,19 +120,75 @@ case preg_match('#^/api/.*$#', $path):
         case "json":
         default:
             header("Content-Type: application/json");
-            echo json_encode([
-                'status' => 'ok',
-                'content' => $hostings->returnData()
-            ]);
+            $output['action'] = 'hostings-info';
+            $output['output'] = $hostings->returnData();
+            $output['status'] = 'ok';
+            echo json_encode($output);
             break;
         }
         break;
+
+
     case "/api/messages":
         header("Content-Type: application/json");
-        echo json_encode([
-            'status' => 'ok',
-            'content' => $message_handler->returnMessages($global_flags['debug'])
-        ]);
+        $output['action'] = 'return-messages';
+        $output['output'] = $message_handler->returnMessages($global_flags['debug']);
+        $output['status'] = 'ok';
+        echo json_encode($output);
+        break;
+
+
+    case "/api/auth":
+        switch ($query['action'] ?? '') {
+            case "log-in":
+                $output['action'] = "log-in";
+                $output['output'] = $auth->login(
+                    $database->escape($_POST['login']),
+                    $database->escape($_POST['password'])
+                );
+                $output['status'] = "ok";
+                /* echo json_encode($output); */
+                header("Location: {$_SESSION['page_back']}");
+                break;
+
+            case "log-out":
+                $output['action'] = "log-out";
+                $output['output'] = $auth->logout();
+                $output['status'] = "ok";
+                /* echo json_encode($output); */
+                header("Location: {$_SESSION['page_back']}");
+                break;
+
+            case "register":
+                $output['action'] = "register";
+                $output['output'] = $auth->register(
+                    [
+                        'email' => $database->escape($_POST['email']) ?? "",
+                        'login' => $database->escape($_POST['login']) ?? "",
+                        'name' => $database->escape($_POST['name']) ?? "",
+                        'surname' => $database->escape($_POST['surname']) ?? ""
+                    ],
+                    $database->escape($_POST['password']) ?? "",
+                    $database->escape($_POST['password-confirm']) ?? "",
+                    $database->escape($_POST['consent']) ?? ""
+                );
+                $output['status'] = "ok";
+                /* echo json_encode($output); */
+                header("Location: {$_SESSION['page_back']}");
+                break;
+
+            case "get-credentials":
+                echo json_encode($output);
+                break;
+
+            case "get-log-in-status":
+            default:
+                $output['action'] = "get-log-in-status";
+                $output['output'] = $auth->getLogInStatus();
+                $output['status'] = "ok";
+                echo json_encode($output);
+                break;
+        }
         break;
     }
     break;

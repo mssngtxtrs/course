@@ -33,10 +33,18 @@ class Auth {
         if ($raw_password) {
             return password_verify(
                 $password,
-                $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single")
+                $database->returnQuery(
+                    "select `password` from `passwords` where `userID` = :userID",
+                    "single",
+                    [ 'userID' => $userID ]
+                )
             );
         } else {
-            return $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single") === $password;
+            return $database->returnQuery(
+                "select `password` from `passwords` where `userID` = :userID",
+                "single",
+                [ 'userID' => $userID ]
+            ) === $password;
         }
     }
 
@@ -45,9 +53,9 @@ class Auth {
     private function getUserID(string $login): int {
         global $database;
         return $database->returnQuery(
-            "select `userID` from `users` where `login` = ?",
+            "select `userID` from `users` where `login` = :login",
             "single",
-            [ $login ]
+            [ 'login' => $login ]
         );
     }
 
@@ -56,9 +64,9 @@ class Auth {
     public function getPermissionLevel(): int {
         global $database;
         return $database->returnQuery(
-            "select `permissionLevel` from `users` where `login` = ",
+            "select `permissionLevel` from `users` where `login` = :login",
             "single",
-            [ $this->credentials['login'] ]
+            [ 'login' => $this->credentials['login'] ]
         );
     }
 
@@ -82,18 +90,18 @@ class Auth {
         if (isset($_SESSION['user']['login']) && isset($_SESSION['user']['hash'])) {
             global $database;
             if ($database->returnQuery(
-                'select * from `users` where `login` = ?',
+                'select * from `users` where `login` = :login',
                 "bool",
-                [ $_SESSION['user']['login'] ]
+                [ 'login' => $_SESSION['user']['login'] ]
             )) {
                 if ($this->verifyPassword(
                     $_SESSION['user']['hash'],
                     $this->getUserID($_SESSION['user']['login'])
                 )) {
                     if ($this->credentials = $database->returnQuery(
-                        "select `name`, `login`, `email` from `users` where `login` = ?",
+                        "select `name`, `login`, `email` from `users` where `login` = :login",
                         "assoc",
-                        [ $_SESSION['user']['login'] ]
+                        [ 'login' => $_SESSION['user']['login'] ]
                     )[0]) {
                         $this->is_logged_in = true;
                         $_SESSION['msg']['dbg'][] = "auto-success";
@@ -117,7 +125,11 @@ class Auth {
 
     public function login(string $login, string $password): bool {
         global $database;
-        $userID = $database->returnQuery("select `userID` from `users` where `login` = ?", "single", [$login]);
+        $userID = $database->returnQuery(
+            "select `userID` from `users` where `login` = :login",
+            "single",
+            [ 'login' => $login ]
+        );
 
         $output = false;
 
@@ -125,12 +137,16 @@ class Auth {
             if ($userID) {
                 if ($this->verifyPassword($password, $userID, true)) {
                     $_SESSION['user']['login'] = $login;
-                    $_SESSION['user']['hash'] = $database->returnQuery("select `password` from `passwords` where `userID` = '$userID'", "single");
+                    $_SESSION['user']['hash'] = $database->returnQuery(
+                        "select `password` from `passwords` where `userID` = :userID",
+                        "single",
+                        [ 'userID' => $userID ]
+                    );
 
                     if ($this->credentials = $database->returnQuery(
-                        "select `name`, `login`, `email` from `users` where `login` = ?",
+                        "select `name`, `login`, `email` from `users` where `login` = :login",
                         "assoc",
-                        [ $_SESSION['user']['login'] ]
+                        [ 'login' => $_SESSION['user']['login'] ]
                     )) {
                         $_SESSION['msg']['std'][] = "login-success";
                         $output = true;
@@ -151,11 +167,10 @@ class Auth {
 
 
 
-    public function logout() {
+    public function logout(): bool {
         unset($_SESSION['user']);
-        /* session_unset(); */
-        /* session_destroy(); */
         $_SESSION['msg']['std'][] = "logout";
+        return true;
     }
 
 
@@ -169,9 +184,9 @@ class Auth {
             $_SESSION['msg']['error'][] = "reg-failed-empty-fields";
         } else {
             if ($database->returnQuery(
-                "select * from `users` where `login` = ?",
+                "select * from `users` where `login` = :login",
                 "bool",
-                [ $credentials['login'] ]
+                [ 'login' => $credentials['login'] ]
             )) {
                 $_SESSION['msg']['error'][] = "reg-failed-user-exists";
             } else {
@@ -184,20 +199,20 @@ class Auth {
                         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
                         if (!$database->returnQuery(
-                            "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (?, ?, ?, ?, 0)",
+                            "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (:email, :login, :name, :surname, 0)",
                             "bool",
                             [
-                                $credentials['email'],
-                                $credentials['login'],
-                                $credentials['name'],
-                                $credentials['surname']
+                                'email' => $credentials['email'],
+                                'login' => $credentials['login'],
+                                'name' => $credentials['name'],
+                                'surname' => $credentials['surname']
                             ]
                         ) && $database->returnQuery(
-                            "insert into `passwords` (`userID`, `password`) values (?, ?)",
+                            "insert into `passwords` (`userID`, `password`) values (:userID, :password)",
                             "bool",
                             [
-                                $this->getUserID($credentials['login']),
-                                $password_hash
+                                'userID' => $this->getUserID($credentials['login']),
+                                'password' => $password_hash
                             ]
                         )) {
                             $_SESSION['msg']['error'][] = "reg-failed-uncaught-sql";

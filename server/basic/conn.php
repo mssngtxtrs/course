@@ -1,8 +1,6 @@
 <?php
 namespace Server;
 
-use mysqli_sql_exception;
-
 class Database {
     private $credentials = [
         'hostname' => "127.0.0.1",
@@ -11,19 +9,19 @@ class Database {
         'database' => "db_course"
     ];
 
-    private \mysqli $conn;
+    private \PDO $conn;
 
 
 
     public function __construct() {
         try {
-            $this->conn = new \mysqli(
-                $this->credentials['hostname'],
+            $dsn = "mysql:dbname={$this->credentials['database']};host={$this->credentials['hostname']}";
+            $this->conn = new \PDO(
+                $dsn,
                 $this->credentials['username'],
-                $this->credentials['password'],
-                $this->credentials['database']
+                $this->credentials['password']
             );
-        } catch (mysqli_sql_exception $e) {
+        } catch (\PDOException $e) {
             error_log("Error connecting to the database: " . $e->getCode());
         }
     }
@@ -31,7 +29,6 @@ class Database {
 
 
     public function __unset($name) {
-        $this->conn->close();
         unset($this->conn);
         unset($this->credentials);
     }
@@ -42,28 +39,25 @@ class Database {
         $output = false;
 
         try {
-            $result = $this->conn->execute_query($query, $params);
-        } catch (mysqli_sql_exception $e) {
+            $result = $this->conn->prepare($query);
+            $result->execute($params);
+        } catch (\PDOException $e) {
             error_log("Error executing SQL query: " . $e);
         }
 
-        if ($this->conn->error) {
-            error_log("Error executing SQL query: " . $this->conn->error);
-        } else {
-            switch ($mode) {
-            case "bool":
-                if ($this->conn->affected_rows) {
-                    $output = true;
-                }
-                break;
-            case "single":
-                $output = $result->fetch_column();
-                break;
-            case "assoc":
-            default:
-                $output = $result->fetch_all(MYSQLI_ASSOC);
-                break;
+        switch ($mode) {
+        case "bool":
+            if ($result->rowCount()) {
+                $output = true;
             }
+            break;
+        case "single":
+            $output = $result->fetchColumn();
+            break;
+        case "assoc":
+        default:
+            $output = $result->fetchAll();
+            break;
         }
 
         return $output;
@@ -72,7 +66,7 @@ class Database {
 
 
     public function escape(string $data): string {
-        return $this->conn->real_escape_string(htmlspecialchars($data));
+        return htmlspecialchars($data);
     }
 }
 ?>
