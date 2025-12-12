@@ -1,13 +1,16 @@
 <?php
 namespace Server;
 
+/* Класс отправки сообщений */
 class Messages {
+    /* Поля класса */
     private array $error_messages;
     private array $messages;
     private array $debug_messages;
 
 
 
+    /* Создание класса */
     public function __construct() {
         $this->messages = $_SESSION['msg']['std'] ?? [];
         $this->error_messages = $_SESSION['msg']['error'] ?? [];
@@ -17,14 +20,7 @@ class Messages {
 
 
 
-    public function __unset($name) {
-        unset($this->error_messages);
-        unset($this->messages);
-        unset($this->debug_messages);
-    }
-
-
-
+    /* Сбор сообщений из сессии */
     private function getMessages(bool $debug = false): array {
         $messages = [];
 
@@ -53,45 +49,26 @@ class Messages {
 
 
 
-    public function showMessages(bool $debug = false): string {
-        global $dictionary;
-
-        $messages = $this->getMessages($debug);
-
-        $output = "<div class='messages'>";
-        $i = 0;
-        foreach ($messages as $message) {
-            $output .= "<div class='" . $message['type'] . "' id='msg" . $i . "' onclick='this.remove()'>";
-            $output .= $dictionary->getDictionaryString($message['message'], "messages");
-            $output .= "</div>";
-            $i += 1;
-        }
-        $output .= "</div>";
-
-        return $output;
-    }
-
-
-
+    /* Создание контейнера в документе */
     public function showMessagesHandler() {
+        global $constructor;
         $output = "<div class='messages'>";
         $output .= "</div>";
-        $output .= "<script src='media/js/messages-handler.js'></script>";
+        $output .= "<script src='" . $constructor->getMediaFolder() . "/js/messages-handler.js'></script>";
         return $output;
     }
 
 
 
+    /* Передача сообщений */
     public function returnMessages(bool $debug = false): array {
-        global $dictionary;
-
         $output = [];
 
         $messages = $this->getMessages($debug);
 
         foreach ($messages as $message) {
             $output[] = [
-                'message' => $dictionary->getDictionaryString($message['message'], "messages"),
+                'message' => $message['message'],
                 'type' => $message['type']
             ];
         }

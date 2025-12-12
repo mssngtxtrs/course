@@ -17,7 +17,7 @@ case $path == '':
 case $path == '/':
     echo $constructor->constructPage(
         [ "head", "header", "banner", "advantages", "hostings-slider", "banner-2", "footer" ],
-        $dictionary->getDictionaryString($request, "paths"),
+        "Главная",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
@@ -28,7 +28,7 @@ case $path == '/':
 case $path == '/about':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
-        $dictionary->getDictionaryString($request, "paths"),
+        "О нас",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
@@ -39,7 +39,7 @@ case $path == '/about':
 case $path == '/hostings':
     echo $constructor->constructPage(
         [ "head", "header", "footer" ],
-        $dictionary->getDictionaryString($request, "paths"),
+        "Хостинги",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
@@ -53,7 +53,7 @@ case $path == '/account':
     } else {
         echo $constructor->constructPage(
             [ "head", "header", "footer" ],
-            $dictionary->getDictionaryString($request, "paths"),
+            "Личный кабинет",
             $global_flags['show-messages']
         );
         $_SESSION['page_back'] = $request;
@@ -68,7 +68,7 @@ case $path == '/reservation':
     } else {
         echo $constructor->constructPage(
             [ "head", "header", "footer" ],
-            $dictionary->getDictionaryString($request, "paths"),
+            "Новая заявка",
             $global_flags['show-messages']
         );
         $_SESSION['page_back'] = $request;
@@ -83,7 +83,7 @@ case $path == '/auth':
     } else {
         echo $constructor->constructPage(
             [ "head", "header", "auth", "footer" ],
-            $dictionary->getDictionaryString($request, "paths"),
+            "Авторизация",
             $global_flags['show-messages']
         );
         $_SESSION['page_back'] = $request;
@@ -92,14 +92,8 @@ case $path == '/auth':
 
 
 
-case $path == '/loc':
-    $constructor->setSessionLocale($query['lang'] ?? '');
-    header("Location: {$_SESSION['page_back']}");
-    break;
-
-
-
 case preg_match('#^/api/.*$#', $path):
+    require "server/custom/hostings.php";
     $output = [
         'status' => "failed",
         'action' => null,
@@ -111,21 +105,26 @@ case preg_match('#^/api/.*$#', $path):
         switch ($query['method'] ?? "") {
         case "slider":
             header("Content-Type: text/html");
-            echo $hostings->returnData("slider");
-            break;
-        case "serialized":
-            header("Content-Type: text/plain");
-            echo $hostings->returnData("serialized");
+            echo Server\Custom\Hostings::returnHostings("slider");
             break;
         case "json":
         default:
             header("Content-Type: application/json");
             $output['action'] = 'hostings-info';
-            $output['output'] = $hostings->returnData();
+            $output['output'] = Server\Custom\Hostings::returnHostings("raw");
             $output['status'] = 'ok';
             echo json_encode($output);
             break;
         }
+        break;
+
+
+    case "/api/hostings/cpu":
+        header("Content-Type: application/json");
+        $output['action'] = 'cpu-info';
+        $output['output'] = Server\Custom\Hostings::returnCPU();
+        $output['status'] = 'ok';
+        echo json_encode($output);
         break;
 
 
@@ -138,57 +137,65 @@ case preg_match('#^/api/.*$#', $path):
         break;
 
 
-    case "/api/auth":
-        switch ($query['action'] ?? '') {
-            case "log-in":
-                $output['action'] = "log-in";
-                $output['output'] = $auth->login(
-                    $database->escape($_POST['login']),
-                    $database->escape($_POST['password'])
-                );
-                $output['status'] = "ok";
-                /* echo json_encode($output); */
-                header("Location: {$_SESSION['page_back']}");
-                break;
+    case "/api/auth/log-out":
+        $output['action'] = "log-out";
+        $output['output'] = $auth->logout();
+        $output['status'] = "ok";
+        /* echo json_encode($output); */
+        header("Location: {$_SESSION['page_back']}");
+        break;
 
-            case "log-out":
-                $output['action'] = "log-out";
-                $output['output'] = $auth->logout();
-                $output['status'] = "ok";
-                /* echo json_encode($output); */
-                header("Location: {$_SESSION['page_back']}");
-                break;
 
-            case "register":
-                $output['action'] = "register";
-                $output['output'] = $auth->register(
-                    [
-                        'email' => $database->escape($_POST['email']) ?? "",
-                        'login' => $database->escape($_POST['login']) ?? "",
-                        'name' => $database->escape($_POST['name']) ?? "",
-                        'surname' => $database->escape($_POST['surname']) ?? ""
-                    ],
-                    $database->escape($_POST['password']) ?? "",
-                    $database->escape($_POST['password-confirm']) ?? "",
-                    $database->escape($_POST['consent']) ?? ""
-                );
-                $output['status'] = "ok";
-                /* echo json_encode($output); */
-                header("Location: {$_SESSION['page_back']}");
-                break;
+    case "/api/auth/log-in":
+        $output['action'] = "log-in";
+        $output['output'] = $auth->login(
+            $database->escape($_POST['login']),
+            $database->escape($_POST['password'])
+        );
+        $output['status'] = "ok";
+        /* echo json_encode($output); */
+        header("Location: {$_SESSION['page_back']}");
+        break;
 
-            case "get-credentials":
-                echo json_encode($output);
-                break;
 
-            case "get-log-in-status":
-            default:
-                $output['action'] = "get-log-in-status";
-                $output['output'] = $auth->getLogInStatus();
-                $output['status'] = "ok";
-                echo json_encode($output);
-                break;
-        }
+    case "/api/auth/register":
+        $output['action'] = "register";
+        $output['output'] = $auth->register(
+            [
+                'email' => $database->escape($_POST['email']) ?? "",
+                'login' => $database->escape($_POST['login']) ?? "",
+                'name' => $database->escape($_POST['name']) ?? "",
+                'surname' => $database->escape($_POST['surname']) ?? ""
+            ],
+            $database->escape($_POST['password']) ?? "",
+            $database->escape($_POST['password-confirm']) ?? "",
+            $database->escape($_POST['consent']) ?? ""
+        );
+        $output['status'] = "ok";
+        /* echo json_encode($output); */
+        header("Location: {$_SESSION['page_back']}");
+        break;
+
+
+    case "/api/auth/get-name":
+        header("Content-Type: application/json");
+        $output['action'] = "get-name";
+        $output['output'] = $auth->getName();
+        $output['status'] = "ok";
+        echo json_encode($output);
+        break;
+
+
+    case "/api/auth/get-log-in-status":
+        header("Content-Type: application/json");
+        $output['action'] = "get-log-in-status";
+        $output['output'] = $auth->getLogInStatus();
+        $output['status'] = "ok";
+        echo json_encode($output);
+        break;
+
+    default:
+        header("Location:/404");
         break;
     }
     break;
@@ -198,7 +205,7 @@ case preg_match('#^/api/.*$#', $path):
 case $path == '/what':
     echo $constructor->constructPage(
         [ "head", "header", "rickroll", "footer" ],
-        $dictionary->getDictionaryString($request, "paths"),
+        "Вам бы лучше и не знать...",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
@@ -210,7 +217,7 @@ default:
     http_response_code(404);
     echo $constructor->constructPage(
         [ "head", "header", "404", "footer" ],
-        $dictionary->getDictionaryString('404', "paths"),
+        "Страница не найдена",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
