@@ -193,7 +193,7 @@ footer nav {
     align-items: end;
 }
 
-header a.auth {
+header .account-nav {
     margin-right: 12px;
 }
 
@@ -254,7 +254,7 @@ p {
 }
 
 a {
-    transition: color 0.3s;
+    transition: color .3s;
 }
 
 a.button,
@@ -263,7 +263,7 @@ button.button {
     padding: var(--button-padding);
     text-decoration: none;
     border-radius: var(--radius-level1);
-    transition: background-color 0.3s;
+    transition: background-color .3s;
     background: var(--background-raise);
     color: var(--foreground);
     border: 1px solid var(--background-raise);
@@ -272,14 +272,14 @@ button.button {
 }
 
 a.button:hover,
-b.button:hover {
+button.button:hover {
     background: var(--background-raise2);
     border-color: var(--background-raise2);
     color: var(--foreground);
 }
 
 a.button:active,
-b.button:active {
+button.button:active {
     background: var(--background-lower);
     border-color: var(--background-lower);
     color: var(--foreground);
@@ -329,13 +329,37 @@ button.button.urgent:active {
 a.header-nav-link:hover,
 a.footer-nav-link:hover {
     color: var(--foreground-raise);
-    text-decoration: underline;
 }
 
 a.header-nav-link:active,
 a.footer-nav-link:active {
     color: var(--foreground-lower);
-    text-decoration: underline;
+}
+
+a.header-nav-link::after,
+a.footer-nav-link::after {
+    content: '';
+    display: block;
+    position: relative;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    transition: width .3s, left .3s, background-color .3s;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: var(--foreground);
+}
+
+a.header-nav-link:hover::after,
+a.footer-nav-link:hover::after {
+    width: 100%;
+    background: var(--foreground-raise);
+}
+
+a.header-nav-link:active::after,
+a.footer-nav-link:active::after {
+    width: 100%;
+    background: var(--foreground-lower);
 }
 
 
@@ -459,7 +483,7 @@ a.footer-nav-link:active {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
 }
 
 #auth .input {
@@ -473,7 +497,7 @@ a.footer-nav-link:active {
 }
 
 #auth form label {
-    margin: 16px 0 8px 16px;
+    margin: 8px 0 8px 16px;
 }
 
 #auth input {
@@ -516,8 +540,6 @@ a.footer-nav-link:active {
 #auth #reg .row:last-of-type .input {
     flex-direction: row;
     align-items: center;
-    /* margin: 10px 0 10px 0; */
-    margin-top: 10px;
 }
 
 #auth #reg .row:last-of-type label {
@@ -547,7 +569,7 @@ a.footer-nav-link:active {
 }
 
 #auth input[type="submit"] {
-    margin-top: calc(20px + 16px + 8px);
+    margin-top: calc(8px);
     width: 100%;
     background: var(--foreground);
     color: var(--background);
@@ -561,21 +583,19 @@ a.footer-nav-link:active {
     background: var(--foreground-lower);
 }
 
+#auth span {
+    color: var(--destructive);
+    margin: 8px 16px 0 16px;
+}
+
 #auth .auth-switcher {
+    display: flex;
     width: fit-content;
     margin: 0 auto;
     padding-top: 24px;
     padding-bottom: 4px;
     height: calc(80px - 24px - 4px);
-}
-
-#auth .auth-switcher .button-wrap {
-    display: inline-block;
-    margin-left: 24px;
-}
-
-#auth .auth-switcher .button-wrap:first-child {
-    margin-left: 0;
+    gap: 24px;
 }
 
 #auth .auth-switcher button {
@@ -585,9 +605,7 @@ a.footer-nav-link:active {
     font-family: "JetBrains Mono", "Courier New", Courier, monospace;
     font-size: var(--font-size-subheadings);
     font-weight: 700;
-    padding-top: 14.5px;
-    padding-bottom: 14.5px;
-    margin-bottom: 2px;
+    height: 100%;
     transition:
         font-size .3s,
         padding .3s;
@@ -595,17 +613,38 @@ a.footer-nav-link:active {
 
 #auth .auth-switcher button:hover {
     color: var(--foreground-lower);
-    padding-top: calc(14.5px / 2);
-    padding-bottom: calc(14.5px / 2);
     font-size: calc(var(--font-size-subheadings) + (var(--font-size-heading2) - var(--font-size-subheadings)) / 2);
 }
 
 #auth .auth-switcher button.opened {
     color: var(--foreground);
     font-size: var(--font-size-heading2);
-    border-bottom: 2px solid var(--foreground);
-    padding-top: 0;
-    padding-bottom: 0;
+}
+
+#auth .auth-switcher button::after {
+    content: '';
+    display: block;
+    position: relative;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    transition: width .3s, left .3s;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: var(--foreground-lower2);
+}
+
+#auth .auth-switcher button.opened::after,
+#auth .auth-switcher button:hover::after {
+    width: 100%;
+}
+
+#auth .auth-switcher button:hover::after {
+    background: var(--foreground-lower);
+}
+
+#auth .auth-switcher button.opened::after {
+    background: var(--foreground);
 }
 
 

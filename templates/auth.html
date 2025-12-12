@@ -14,13 +14,27 @@
                 <div class="row">
                     <div class="input">
                         <label for="login">Логин</label>
-                        <input type="text" name="login" required>
+                        <input
+                            type="text"
+                            name="login"
+                            required
+                            title="5–30 символов: латиница, цифры, нижнее подчёркивание"
+                            pattern="^[A-Za-z0-9_]{5,30}$"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input">
                         <label for="password">Пароль</label>
-                        <input type="password" name="password" required>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            title="8–30 символов. Минимум: 1 цифра, 1 заглавная буква. Только латиница, цифры и '_'"
+                            pattern="^(?=.*[A-Z])(?=.*\d)[A-Za-z0-9_]{8,30}$"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <input type="submit" class="button urgent" value="Войти">
@@ -30,35 +44,77 @@
                 <div class="row">
                     <div class="input">
                         <label for="name">Имя</label>
-                        <input type="text" name="firstName" required>
+                        <input
+                            type="text"
+                            name="firstName"
+                            required
+                            title="Только буквы: латиница и кириллица"
+                            pattern="^[A-Za-zА-Яа-яЁё]+$"
+                        >
+                        <span></span>
                     </div>
                     <div class="input">
                         <label for="surname">Фамилия</label>
-                        <input type="text" name="lastName" required>
+                        <input
+                            type="text"
+                            name="lastName"
+                            required
+                            title="Только буквы: латиница и кириллица"
+                            pattern="^[A-Za-zА-Яа-яЁё]+$"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input">
                         <label for="login">Логин</label>
-                        <input type="text" name="login" required>
+                        <input
+                            type="text"
+                            name="login"
+                            required
+                            title="8–30 символов: латиница, цифры, нижнее подчёркивание"
+                            pattern="^[A-Za-z0-9_]{5,30}$"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input">
                         <label for="email">Почта</label>
-                        <input type="email" name="email" required>
+                        <input
+                            type="email"
+                            name="email"
+                            title="Почта должна содержать @"
+                            required
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input">
                         <label for="password">Пароль</label>
-                        <input type="password" name="password" required>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            title="8–30 символов. Минимум: 1 цифра, 1 заглавная буква. Только латиница, цифры и _"
+                            pattern="^(?=.*[A-Z])(?=.*\d)[A-Za-z0-9_]{8,30}$"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input">
                         <label for="password-confirm">Подтвердите пароль</label>
-                        <input type="password" name="password-confirm" required>
+                        <input
+                            type="password"
+                            name="password-confirm"
+                            required
+                            title="Пароль должен совпадать"
+                            pattern="^(?=.*[A-Z])(?=.*\d)[A-Za-z0-9_]{8,30}$"
+                            oninput="checkPasswords()"
+                        >
+                        <span></span>
                     </div>
                 </div>
                 <div class="row">
