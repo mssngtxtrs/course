@@ -2,12 +2,12 @@
 namespace Server;
 
 /* Константы с запросами */
-define("PASSWORD_QUERY", "select `password` from `passwords` where `userID` = :userID");
+define("PASSWORD_QUERY", "select `password` from `users` where `userID` = :userID");
 define("USER_ID_QUERY", "select `userID` from `users` where `login` = :login");
 define("PERMISSION_QUERY", "select `permissionLevel` from `users` where `login` = :login");
 define("LOGIN_QUERY", "select `login` from `users` where `login` = :login");
 define("GET_CREDENTIALS_QUERY", "select `name`, `login`, `email` from `users` where `login` = :login");
-define("REGISTER_QUERY", "insert into `users` (`email`, `login`, `name`, `surname`, `permissionLevel`) values (:email, :login, :name, :surname, 0)");
+define("REGISTER_QUERY", "insert into `users` (`email`, `login`, `password`, `firstName`, `lastName`, `permissionID`) values (:email, :login, :password, :firstName, :lastName, 0)");
 
 /* Класс авторизации */
 class Auth {
@@ -230,15 +230,9 @@ class Auth {
                             [
                                 'email' => $credentials['email'],
                                 'login' => $credentials['login'],
-                                'name' => $credentials['name'],
-                                'surname' => $credentials['surname']
-                            ]
-                        ) && $database->returnQuery(
-                            "insert into `passwords` (`userID`, `password`) values (:userID, :password)",
-                            "bool",
-                            [
-                                'userID' => $this->getUserID($credentials['login']),
-                                'password' => $password_hash
+                                'password' => $password_hash,
+                                'firstName' => $credentials['firstName'],
+                                'lastName' => $credentials['lastName']
                             ]
                         )) {
                             $_SESSION['msg']['error'][] = "Неизвестная ошибка";
