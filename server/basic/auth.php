@@ -4,10 +4,10 @@ namespace Server;
 /* Константы с запросами */
 define("PASSWORD_QUERY", "select `password` from `users` where `userID` = :userID");
 define("USER_ID_QUERY", "select `userID` from `users` where `login` = :login");
-define("PERMISSION_QUERY", "select `permissionLevel` from `users` where `login` = :login");
+define("PERMISSION_QUERY", "select `permissionID` from `users` where `login` = :login");
 define("LOGIN_QUERY", "select `login` from `users` where `login` = :login");
-define("GET_CREDENTIALS_QUERY", "select `name`, `login`, `email` from `users` where `login` = :login");
-define("REGISTER_QUERY", "insert into `users` (`email`, `login`, `password`, `firstName`, `lastName`, `permissionID`) values (:email, :login, :password, :firstName, :lastName, 0)");
+define("GET_CREDENTIALS_QUERY", "select `firstName`, `login`, `email` from `users` where `login` = :login");
+define("REGISTER_QUERY", "insert into `users` (`email`, `login`, `password`, `firstName`, `lastName`, `permissionID`) values (:email, :login, :password, :firstName, :lastName, 1)");
 
 /* Класс авторизации */
 class Auth {
@@ -81,7 +81,7 @@ class Auth {
 
     /* Получение имени пользователя */
     public function getName(): string {
-        return $this->credentials['name'];
+        return $this->credentials['firstName'];
     }
 
 
@@ -160,11 +160,16 @@ class Auth {
                         [ 'userID' => $userID ]
                     );
 
-                    if ($this->credentials = $database->returnQuery(
+                    if ($raw = $database->returnQuery(
                         GET_CREDENTIALS_QUERY,
                         "assoc",
                         [ 'login' => $_SESSION['user']['login'] ]
                     )) {
+                        $this->credentials = [
+                            'firstName' => $raw[0]['firstName'],
+                            'login' => $raw[0]['login'],
+                            'email' => $raw[0]['email']
+                        ];
                         $_SESSION['msg']['std'][] = "Успешный вход";
                         $output = true;
                     } else {

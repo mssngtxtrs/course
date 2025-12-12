@@ -91,6 +91,19 @@ case $path == '/auth':
     break;
 
 
+case $path == '/admin':
+    if ($auth->getPermissionLevel() !== 3) {
+        header("Location: what");
+    } else {
+        echo $constructor->constructPage(
+            [ "head", "header", "footer" ],
+            "Админ-панель",
+            $global_flags['show-messages']
+        );
+    }
+    break;
+
+
 
 case preg_match('#^/api/.*$#', $path):
     require "server/custom/hostings.php";
@@ -102,20 +115,11 @@ case preg_match('#^/api/.*$#', $path):
 
     switch ($path) {
     case "/api/hostings":
-        switch ($query['method'] ?? "") {
-        case "slider":
-            header("Content-Type: text/html");
-            echo Server\Custom\Hostings::returnHostings("slider");
-            break;
-        case "json":
-        default:
-            header("Content-Type: application/json");
-            $output['action'] = 'hostings-info';
-            $output['output'] = Server\Custom\Hostings::returnHostings("raw");
-            $output['status'] = 'ok';
-            echo json_encode($output);
-            break;
-        }
+        header("Content-Type: application/json");
+        $output['action'] = 'hostings-info';
+        $output['output'] = Server\Custom\Hostings::returnHostings();
+        $output['status'] = 'ok';
+        echo json_encode($output);
         break;
 
 
@@ -164,8 +168,8 @@ case preg_match('#^/api/.*$#', $path):
             [
                 'email' => $database->escape($_POST['email']) ?? "",
                 'login' => $database->escape($_POST['login']) ?? "",
-                'name' => $database->escape($_POST['name']) ?? "",
-                'surname' => $database->escape($_POST['surname']) ?? ""
+                'firstName' => $database->escape($_POST['firstName']) ?? "",
+                'lastName' => $database->escape($_POST['lastName']) ?? ""
             ],
             $database->escape($_POST['password']) ?? "",
             $database->escape($_POST['password-confirm']) ?? "",
@@ -180,8 +184,13 @@ case preg_match('#^/api/.*$#', $path):
     case "/api/auth/get-name":
         header("Content-Type: application/json");
         $output['action'] = "get-name";
-        $output['output'] = $auth->getName();
-        $output['status'] = "ok";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = $auth->getName();
+            $output['status'] = "ok";
+        } else {
+            $output['output'] = false;
+            $output['status'] = "failed";
+        }
         echo json_encode($output);
         break;
 
@@ -209,6 +218,12 @@ case $path == '/what':
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
+    break;
+
+
+case "/debug":
+    Server\Router::route('routes_default', '/');
+    Server\Router::route('routes_api', '/', true);
     break;
 
 
