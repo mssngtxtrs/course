@@ -39,10 +39,24 @@ class Hostings {
         global $database;
         $output = false;
 
-        $output = $database->returnQuery(
+        if ($raw = $database->returnQuery(
             CPU_QUERY,
             "assoc"
-        );
+        )) {
+            $output = [];
+            foreach ($raw as $cpu) {
+                $output[] = [
+                    'cpuID' => $cpu['cpuID'],
+                    'cpuName' => $cpu['cpuName'],
+                    'frequency' => $cpu['frequency'],
+                    'cores' => $cpu['cores'],
+                    'threads' => $cpu['threads'],
+                    'cacheL3' => $cpu['cacheL3'],
+                    'cacheL2' => $cpu['cacheL2'],
+                    'cacheL1' => $cpu['cacheL1'],
+                ];
+            }
+        }
 
         return $output;
     }
