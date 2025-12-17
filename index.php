@@ -17,7 +17,7 @@ require "server/basic/messages.php";
 $constructor = new Server\Constructor(
     website_name: "Курсач",
     templates_folder: "templates",
-    media_folder: "media",
+    media_folder: "/media",
     debug: $global_flags['debug'],
 );
 

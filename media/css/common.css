@@ -113,9 +113,8 @@ body {
     max-width: 1024px;
 }
 
-.placeholder-size,
-#rickroll {
-    height: calc(100vh - 140px - 160px);
+.placeholder-size {
+    min-height: calc(100vh - 140px - 160px);
 }
 
 section {
@@ -346,7 +345,6 @@ a.footer-nav-link::after {
     height: 1px;
     transition: width .3s, left .3s, background-color .3s;
     transform: translateX(-50%);
-    z-index: 1;
     background: var(--foreground);
 }
 

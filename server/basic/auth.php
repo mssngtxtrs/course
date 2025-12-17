@@ -6,7 +6,7 @@ define("PASSWORD_QUERY", "select `password` from `users` where `userID` = :userI
 define("USER_ID_QUERY", "select `userID` from `users` where `login` = :login");
 define("PERMISSION_QUERY", "select `permissionID` from `users` where `login` = :login");
 define("LOGIN_QUERY", "select `login` from `users` where `login` = :login");
-define("GET_CREDENTIALS_QUERY", "select `firstName`, `login`, `email` from `users` where `login` = :login");
+define("GET_CREDENTIALS_QUERY", "select `firstName`, `lastName`, `login`, `email` from `users` where `login` = :login");
 define("REGISTER_QUERY", "insert into `users` (`email`, `login`, `password`, `firstName`, `lastName`, `permissionID`) values (:email, :login, :password, :firstName, :lastName, 1)");
 
 /* Класс авторизации */
@@ -82,6 +82,18 @@ class Auth {
     /* Получение имени пользователя */
     public function getName(): string {
         return $this->credentials['firstName'];
+    }
+
+
+
+    /* Получение данных пользователя */
+    public function getCredentials(): array {
+        return [
+            'firstName' => $this->credentials['firstName'],
+            'lastName' => $this->credentials['lastName'],
+            'email' => $this->credentials['email'],
+            'permissionID' => $this->getPermissionLevel(),
+        ];
     }
 
 

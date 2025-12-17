@@ -21,7 +21,6 @@ class Hostings {
                 $output[] = [
                     'hostingID' => $hosting['hostingID'],
                     'hostingAlias' => $hosting['hostingAlias'],
-                    'maxUsers' => $hosting['maxUsers'],
                     'cpuID' => $hosting['cpuID'],
                     'ram' => $hosting['ram'],
                     'ramUser' => $hosting['ramUser'],

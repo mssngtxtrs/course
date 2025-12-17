@@ -1,0 +1,42 @@
+<section id="new-request">
+    <div class="container">
+        <h1>Новая заявка</h1>
+        <form action="/api/requests/new" method="post">
+            <!-- <input type="submit"> -->
+            <div class="row">
+                <div class="input" id="hostings-slider">
+                    <label for="hosting">Выберите хостинг</label>
+                    <div class="hostings-slider" id="hostings-container"></div>
+                    <div class="hostings-slider-controls">
+                        <button class="prev-button button"><img id="prev-button-icon" src="<?= $this->media_folder ?>/icons/prev.svg" alt="⮜"></button>
+                        <button class="next-button button"><img id="next-button-icon" src="<?= $this->media_folder ?>/icons/next.svg" alt="⮞"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input">
+                    <label for="months">Месяцы аренды</label>
+                    <select
+                        name="months"
+                        id="months"
+                    >
+                        <option value="1">1 месяц</option>
+                        <option value="3">3 месяца</option>
+                        <option value="6">6 месяцев</option>
+                        <option value="12">12 месяцев</option>
+                    </select>
+                    <span></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input">
+                    <h2>Итоговая цена</h2>
+                    <h2>0 ₽</h2>
+                </div>
+            </div>
+            <input class="button urgent" type="submit" value="Зарегистрироваться">
+        </form>
+    </div>
+</section>
+
+<script type="module" src="<?= $this->media_folder ?>/js/new-request.js"></script>

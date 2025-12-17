@@ -176,7 +176,6 @@
     height: 2px;
     transition: width .3s, left .3s;
     transform: translateX(-50%);
-    z-index: 1;
     background: var(--foreground-lower2);
 }
 

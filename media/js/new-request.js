@@ -66,7 +66,7 @@ function buildSlider() {
             return response.json();
         })
         .then(json => {
-            let i = 0;
+            let i = -1;
 
             json.output.forEach(item => {
                 const cpu = cpus[item.cpuID].cpuName;
@@ -86,11 +86,14 @@ function buildSlider() {
                 slider.innerHTML += `
                 <div class='hosting-wrap'>
                     <div class='hosting'>
-                        <h2>${item.hostingAlias}</h2>
+                        <div class='hosting-header'>
+                            <input type='radio' name='hosting' value='${item.hostingID}'>
+                            <h2>${item.hostingAlias}</h2>
+                        </div>
                         <p>Процессор: ${cpu}</p>
-                        <p>Оперативная память: ${ram} ${ramDigit}</p>
+                        <p>ОЗУ: ${ram} ${ramDigit}</p>
                         <p>Пользовательский объём: ${ramUser} ${ramUserDigit}</p>
-                        <p>Объём диска: ${diskSpace} ${diskSpaceDigit}</p>
+                        <p>Диск: ${diskSpace} ${diskSpaceDigit}</p>
                         <p>Пользовательский объём: ${diskSpaceUser} ${diskSpaceUserDigit}</p>
                     </div>
                 </div>
@@ -103,6 +106,8 @@ function buildSlider() {
         })
         .then(() => {
             slideWidth = document.querySelectorAll(".hosting")[0].clientWidth;
+            console.log(document.querySelectorAll(".hosting")[0].clientWidth);
+            console.log(slideWidth);
         })
         .then(() => {
             checkScroll("still");
@@ -113,7 +118,6 @@ function buildSlider() {
                 retries += 1;
                 buildSlider();
             }
-            slider.innerHTML = "Error getting slider content";
         });
 }
 
@@ -139,7 +143,8 @@ const max_retries = 3;
 buildSlider();
 
 
-prevButton.addEventListener('click', () => {
+prevButton.addEventListener('click', (event) => {
+    event.preventDefault();
     slider.scrollBy({
         left: -slideWidth,
     });
@@ -147,7 +152,8 @@ prevButton.addEventListener('click', () => {
 });
 
 
-nextButton.addEventListener('click', () => {
+nextButton.addEventListener('click', (event) => {
+    event.preventDefault();
     slider.scrollBy({
         left: slideWidth,
     });

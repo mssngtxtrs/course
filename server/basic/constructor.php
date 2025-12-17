@@ -46,7 +46,6 @@ class Constructor {
 
     /* Получение шаблона */
     public function returnTemplate(string $template_name): string {
-        global $hostings, $auth, $database;
         $path_to_template = $this->templates_folder . "/" . $template_name . ".html";
         ob_start();
         include $path_to_template;

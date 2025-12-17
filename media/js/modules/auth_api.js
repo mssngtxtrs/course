@@ -34,6 +34,10 @@ export const AuthAPI = {
         return AuthAPI.request("/api/auth/get-name");
     },
 
+    getCredentials() {
+        return AuthAPI.request("/api/auth/get-credentials");
+    },
+
     getLogInStatus() {
         return AuthAPI.request("/api/auth/get-log-in-status");
     }

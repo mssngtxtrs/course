@@ -47,12 +47,12 @@ case $path == '/hostings':
 
 
 
-case $path == '/account':
+case $path == '/requests':
     if (!$auth->getLogInStatus()) {
-        header("Location: auth");
+        header("Location: /auth");
     } else {
         echo $constructor->constructPage(
-            [ "head", "header", "footer" ],
+            [ "head", "header", "account", "footer" ],
             "Личный кабинет",
             $global_flags['show-messages']
         );
@@ -62,12 +62,12 @@ case $path == '/account':
 
 
 
-case $path == '/reservation':
+case $path == '/requests/new':
     if (!$auth->getLogInStatus()) {
-        header("Location: auth");
+        header("Location: /auth");
     } else {
         echo $constructor->constructPage(
-            [ "head", "header", "footer" ],
+            [ "head", "header", "new-request", "footer" ],
             "Новая заявка",
             $global_flags['show-messages']
         );
@@ -76,24 +76,9 @@ case $path == '/reservation':
     break;
 
 
-
-case $path == '/auth':
-    if ($auth->getLogInStatus()) {
-        header("Location: account");
-    } else {
-        echo $constructor->constructPage(
-            [ "head", "header", "auth", "footer" ],
-            "Авторизация",
-            $global_flags['show-messages']
-        );
-        $_SESSION['page_back'] = $request;
-    }
-    break;
-
-
-case $path == '/admin':
+case $path == "/requests/admin":
     if ($auth->getPermissionLevel() !== 3) {
-        header("Location: what");
+        header("Location: /what");
     } else {
         echo $constructor->constructPage(
             [ "head", "header", "footer" ],
@@ -105,10 +90,24 @@ case $path == '/admin':
 
 
 
+case $path == '/auth':
+    if ($auth->getLogInStatus()) {
+        header("Location: /requests");
+    } else {
+        echo $constructor->constructPage(
+            [ "head", "header", "auth", "footer" ],
+            "Авторизация",
+            $global_flags['show-messages']
+        );
+        $_SESSION['page_back'] = $request;
+    }
+    break;
+
+
 case preg_match('#^/api/.*$#', $path):
     require "server/custom/hostings.php";
+    require "server/custom/requests.php";
     $output = [
-        'status' => "failed",
         'action' => null,
         'output' => null
     ];
@@ -118,7 +117,6 @@ case preg_match('#^/api/.*$#', $path):
         header("Content-Type: application/json");
         $output['action'] = 'hostings-info';
         $output['output'] = Server\Custom\Hostings::returnHostings();
-        $output['status'] = 'ok';
         echo json_encode($output);
         break;
 
@@ -127,7 +125,6 @@ case preg_match('#^/api/.*$#', $path):
         header("Content-Type: application/json");
         $output['action'] = 'cpu-info';
         $output['output'] = Server\Custom\Hostings::returnCPU();
-        $output['status'] = 'ok';
         echo json_encode($output);
         break;
 
@@ -136,7 +133,6 @@ case preg_match('#^/api/.*$#', $path):
         header("Content-Type: application/json");
         $output['action'] = 'return-messages';
         $output['output'] = $message_handler->returnMessages($global_flags['debug']);
-        $output['status'] = 'ok';
         echo json_encode($output);
         break;
 
@@ -144,7 +140,6 @@ case preg_match('#^/api/.*$#', $path):
     case "/api/auth/log-out":
         $output['action'] = "log-out";
         $output['output'] = $auth->logout();
-        $output['status'] = "ok";
         /* echo json_encode($output); */
         header("Location: {$_SESSION['page_back']}");
         break;
@@ -156,7 +151,6 @@ case preg_match('#^/api/.*$#', $path):
             $database->escape($_POST['login']),
             $database->escape($_POST['password'])
         );
-        $output['status'] = "ok";
         /* echo json_encode($output); */
         header("Location: {$_SESSION['page_back']}");
         break;
@@ -175,7 +169,6 @@ case preg_match('#^/api/.*$#', $path):
             $database->escape($_POST['password-confirm']) ?? "",
             $database->escape($_POST['consent']) ?? ""
         );
-        $output['status'] = "ok";
         /* echo json_encode($output); */
         header("Location: {$_SESSION['page_back']}");
         break;
@@ -186,10 +179,20 @@ case preg_match('#^/api/.*$#', $path):
         $output['action'] = "get-name";
         if ($auth->getLogInStatus()) {
             $output['output'] = $auth->getName();
-            $output['status'] = "ok";
         } else {
             $output['output'] = false;
-            $output['status'] = "failed";
+        }
+        echo json_encode($output);
+        break;
+
+
+    case "/api/auth/get-credentials":
+        header("Content-Type: application/json");
+        $output['action'] = "get-credentials";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = $auth->getCredentials();
+        } else {
+            $output['output'] = false;
         }
         echo json_encode($output);
         break;
@@ -199,9 +202,34 @@ case preg_match('#^/api/.*$#', $path):
         header("Content-Type: application/json");
         $output['action'] = "get-log-in-status";
         $output['output'] = $auth->getLogInStatus();
-        $output['status'] = "ok";
         echo json_encode($output);
         break;
+
+
+    case "/api/requests/get-permissions":
+        header("Content-Type: application/json");
+        $output['action'] = "get-permissions";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = Server\Custom\Requests::getPermissions();
+        } else {
+            $output['output'] = false;
+        }
+        echo json_encode($output);
+        break;
+
+
+    case "/api/requests/new":
+        header("Content-Type: application/json");
+        $output['action'] = "new-request";
+        if ($auth->getLogInStatus()) {
+            /* $output['output'] = Server\Custom\Requests::newRequest(); */
+            $output['output'] = $_POST;
+        } else {
+            $output['output'] = false;
+        }
+        echo json_encode($output);
+        break;
+
 
     default:
         header("Location:/404");
@@ -219,13 +247,6 @@ case $path == '/what':
     );
     $_SESSION['page_back'] = $request;
     break;
-
-
-case "/debug":
-    Server\Router::route('routes_default', '/');
-    Server\Router::route('routes_api', '/', true);
-    break;
-
 
 
 default:
