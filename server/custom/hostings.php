@@ -26,6 +26,7 @@ class Hostings {
                     'ramUser' => $hosting['ramUser'],
                     'diskSpace' => $hosting['diskSpace'],
                     'diskSpaceUser' => $hosting['diskSpaceUser'],
+                    'pricePerMonth' => $hosting['pricePerMonth'],
                 ];
             }
         }

@@ -87,7 +87,9 @@ function buildSlider() {
                 <div class='hosting-wrap'>
                     <div class='hosting'>
                         <div class='hosting-header'>
-                            <input type='radio' name='hosting' value='${item.hostingID}'>
+                            <input required type='radio' name='hosting' value='${item.hostingID}'>
+                            <span class='hidden'></span>
+                            <span class='hidden'>${item.pricePerMonth}</span>
                             <h2>${item.hostingAlias}</h2>
                         </div>
                         <p>Процессор: ${cpu}</p>
@@ -106,8 +108,15 @@ function buildSlider() {
         })
         .then(() => {
             slideWidth = document.querySelectorAll(".hosting")[0].clientWidth;
-            console.log(document.querySelectorAll(".hosting")[0].clientWidth);
-            console.log(slideWidth);
+            const hostings_inputs = document.querySelectorAll('form #hostings-container input');
+
+            hostings_inputs.forEach(input => {
+                input.addEventListener('click', () => {
+                    hostingPrice = input.nextElementSibling.nextElementSibling.innerHTML;
+                    console.log(hostingPrice);
+                    calcPrice();
+                });
+            });
         })
         .then(() => {
             checkScroll("still");
@@ -121,6 +130,21 @@ function buildSlider() {
         });
 }
 
+function calcPrice() {
+    const months = months_select.value;
+    finalPrice = hostingPrice * months;
+    assignPrice();
+}
+
+function assignPrice() {
+    const priceContainer = document.getElementById('final-price');
+    priceContainer.innerHTML = round(finalPrice, 2) + ' ₽';
+}
+
+function round(n, decimals = 0) {
+    return Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`);
+}
+
 
 
 
@@ -128,6 +152,8 @@ function buildSlider() {
 const slider = document.querySelector('.hostings-slider');
 const prevButton = document.querySelector('.hostings-slider-controls .prev-button');
 const nextButton = document.querySelector('.hostings-slider-controls .next-button');
+const price_text = document.getElementById('final-price');
+const months_select = document.getElementById('months');
 
 const cpus = getCPU();
 
@@ -138,6 +164,9 @@ let currentSlide = 0;
 
 let retries = 0;
 const max_retries = 3;
+
+let hostingPrice = 0;
+let finalPrice = 0;
 
 
 buildSlider();
@@ -160,3 +189,9 @@ nextButton.addEventListener('click', (event) => {
     checkScroll("right");
 });
 
+
+months_select.addEventListener('input', (event) => {
+    const months = months_select.value;
+    finalPrice = hostingPrice * months;
+    assignPrice();
+});

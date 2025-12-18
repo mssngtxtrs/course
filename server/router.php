@@ -27,7 +27,7 @@ case $path == '/':
 
 case $path == '/about':
     echo $constructor->constructPage(
-        [ "head", "header", "footer" ],
+        [ "head", "header", "about", "footer" ],
         "О нас",
         $global_flags['show-messages']
     );
@@ -81,7 +81,7 @@ case $path == "/requests/admin":
         header("Location: /what");
     } else {
         echo $constructor->constructPage(
-            [ "head", "header", "footer" ],
+            [ "head", "header", "admin", "footer" ],
             "Админ-панель",
             $global_flags['show-messages']
         );
@@ -218,16 +218,96 @@ case preg_match('#^/api/.*$#', $path):
         break;
 
 
-    case "/api/requests/new":
+    case "/api/requests/get-states":
         header("Content-Type: application/json");
-        $output['action'] = "new-request";
+        $output['action'] = "get-states";
         if ($auth->getLogInStatus()) {
-            /* $output['output'] = Server\Custom\Requests::newRequest(); */
-            $output['output'] = $_POST;
+            $output['output'] = Server\Custom\Requests::getStates();
         } else {
             $output['output'] = false;
         }
         echo json_encode($output);
+        break;
+
+
+    case "/api/requests/get":
+        header("Content-Type: application/json");
+        $output['action'] = "get-requests";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = Server\Custom\Requests::getRequests(
+                $auth->getUserID($_SESSION['user']['login'])
+            );
+        } else {
+            $output['output'] = false;
+        }
+        echo json_encode($output);
+        break;
+
+
+    case "/api/requests/get-admin":
+        header("Content-Type: application/json");
+        $output['action'] = "get-requests-admin";
+        if ($auth->getPermissionLevel() == 3) {
+            $output['output'] = Server\Custom\Requests::getRequestsAdmin();
+        } else {
+            $output['output'] = false;
+        }
+        echo json_encode($output);
+        break;
+
+
+    case "/api/requests/new":
+        header("Content-Type: application/json");
+        $output['action'] = "new-request";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = Server\Custom\Requests::newRequest(
+                $database->escape($_POST['hosting']),
+                $database->escape($_POST['months']),
+                $auth->getUserID($_SESSION['user']['login']),
+                $database->escape($_POST['note']),
+            );
+        } else {
+            $output['output'] = false;
+        }
+        /* echo json_encode($output); */
+        header("Location: /requests");
+        break;
+
+
+    case "/api/requests/state":
+        header("Content-Type: application/json");
+        $output['action'] = "get-requests-admin";
+        if ($auth->getLogInStatus() && $auth->getPermissionLevel() == 3) {
+            if (!$_POST) {
+                $output['output'] = [
+                    'type' => "error",
+                    'message' => "Данные не были отправлены",
+                    'request' => $_POST
+                ];
+            } else {
+                $output['output'] = Server\Custom\Requests::setStatus(
+                    $database->escape($_POST['id']),
+                    $database->escape($_POST['value'])
+                );
+            }
+        }
+        echo json_encode($output);
+        break;
+
+
+    case "/api/requests/close":
+        header("Content-Type: application/json");
+        $output['action'] = "new-request";
+        if ($auth->getLogInStatus()) {
+            $output['output'] = Server\Custom\Requests::closeRequest(
+                $database->escape($_POST['reservationID']),
+                $auth->getUserID($_SESSION['user']['login'])
+            );
+        } else {
+            $output['output'] = false;
+        }
+        /* echo json_encode($output); */
+        header("Location: /requests");
         break;
 
 

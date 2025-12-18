@@ -42,7 +42,7 @@ function buildHeader() {
             // header_burger.innerHTML += `
             //     <a class="button urgent account" href="/requests">${json.output}</a>
             //     <a class="header-nav-link" href="/requests/new">Новая заявка</a>
-            //     <a class="header-nav-link" href="api/auth/log-out">Выйти</a>
+            //     <a class="header-nav-link" href="/api/auth/log-out">Выйти</a>
             // `;
         }
     });

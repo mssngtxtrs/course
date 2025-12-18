@@ -8,9 +8,14 @@ function buildHeader() {
             account_nav.innerHTML += `
                 <p>${json.output}</p>
                 <a class="footer-nav-link" href="/requests">Личный кабинет</a>
-                <a class="footer-nav-link" href="requests/new">Новая заявка</a>
-                <a class="footer-nav-link" href="api/auth/log-out">Выйти</a>
+                <a class="footer-nav-link" href="/requests/new">Новая заявка</a>
+                <a class="footer-nav-link" href="/api/auth/log-out">Выйти</a>
             `;
+        } else {
+            account_nav.innerHTML += `
+                <p>Аккаунт</p>
+                <a class="footer-nav-link" href="/auth">Войти</a>
+            `
         }
     });
 }

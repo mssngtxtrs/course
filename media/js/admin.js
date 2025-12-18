@@ -1,5 +1,3 @@
-import { AuthAPI } from "./modules/auth_api.js";
-
 const hostings = getHostings();
 const cpus = getCPUs();
 const permissions = getPermissions();
@@ -8,46 +6,12 @@ const states = getStates();
 const filter_select = document.getElementById('filter');
 
 const max_retries = 3;
-let personal_retries = 0;
 let request_retries = 0;
 let filter_retries = 0;
 
 
-buildPersonal();
 buildRequests();
 
-
-function buildPersonal() {
-    const personal = document.getElementById('personal')
-    const personal_buttons = personal.querySelector('.buttons');
-
-    AuthAPI.getCredentials()
-        .then(json => {
-            const name = personal.querySelector('h1');
-            const email = personal.querySelector('h2');
-            const permission = personal.querySelector('p');
-
-            const permissionName = permissions[json.output.permissionID];
-
-            name.innerHTML = `${json.output.firstName} ${json.output.lastName}`;
-
-            email.innerHTML = `${json.output.email}`;
-            permission.innerHTML += `${permissionName.permission}`;
-
-            if (json.output.permissionID == 3) {
-                personal_buttons.innerHTML += `<button class="button" onclick="window.location = 'requests/admin'">Админ-панель</button>`;
-            }
-
-            personal_buttons.innerHTML += `<button class="button" onclick="window.location = 'api/auth/log-out'">Выход</button>`;
-        })
-        .catch(err => {
-            console.error("Error getting personal info: " + err);
-            if (personal_retries < max_retries) {
-                personal_retries += 1;
-                buildPersonal();
-            }
-        });
-}
 
 function buildRequests(filter) {
     const requests = document.getElementById('requests');
@@ -57,7 +21,7 @@ function buildRequests(filter) {
         filter_select.innerHTML = '';
     }
 
-    fetch("/api/requests/get")
+    fetch("/api/requests/get-admin")
         .then(response => {
             if (!response.ok) throw new Error("No response from server");
             return response.json();
@@ -71,25 +35,45 @@ function buildRequests(filter) {
             } else {
                 json.output.forEach(item => {
                     if (filter == item.stateID || filter == 0 || !filter) {
-                        const state = states[item.stateID].state;
+                        let states_content = '';
+
+                        for (let i = 1; i <= Object.keys(states).length; i++) {
+                            const state_name = states[i].state;
+                            if (i != item.stateID) {
+                                states_content += `<option value="${i}">${state_name}</option>`;
+                            } else {
+                                states_content += `<option value="${i}" selected>${state_name}</option>`;
+                            }
+                        }
 
                         requests.innerHTML += `
                             <div class="request">
                                 <div class="text">
                                     <h2>Заявка ${item.reservationID}</h2>
-                                    <p>Статус: ${state}</p>
+                                    <h3>${item.credentials}</h3><br>
                                     <p>Стоимость: ${item.price} ₽</p>
                                     ${item.stateID == 2 ? "<p>Дата окончания: " + item.expirationDate + "</p>" : ""}
                                     ${item.note != '' ? "<br><p>Примечание:<br>" + item.note + "</p>" : ""}
                                 </div>
                                 <div class="buttons">
-                                    <button class="button" onclick="requestCloseModal(${item.reservationID})">Отменить</button>
+                                    <select name="change-state" id="change${item.reservationID}">
+                                        ${states_content}
+                                    </select>
                                 </div>
                             </div>
                         `;
                     }
                 });
             }
+        })
+        .then(() => {
+            const selects = requests.querySelectorAll("select");
+
+            selects.forEach(select => {
+                select.addEventListener('change', function () {
+                    changeStatus(this);
+                });
+            });
         })
         .then(() => {
             if (!filter) {
@@ -216,7 +200,7 @@ function fillFilter() {
     try {
         filter_select.innerHTML = `<option value="0">Все</option>`;
 
-        for (let i = 1; i <= Object.keys(states).length - 1; i++) {
+        for (let i = 1; i <= Object.keys(states).length; i++) {
             const state_name = states[i].state;
             if (state_name == undefined) throw new Error("Status name in undefined");
 
@@ -233,4 +217,30 @@ function fillFilter() {
 
 function filterRequests(filter) {
     buildRequests(filter);
+}
+
+function changeStatus(element) {
+    const id = element.id.replace(/\D+/g, '');
+    const value = element.value;
+
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('value', value);
+
+    fetch('/api/requests/state', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) throw new Error("No response from server");
+            return response.json();
+        })
+        .then(json => {
+            document.querySelector(".messages").innerHTML += `
+                <div class="${json.output.type}" onclick="this.remove()">${json.output.message}</div>
+            `;
+        })
+        .catch(err => {
+            console.log("Error sending data to server: " + err);
+        })
 }

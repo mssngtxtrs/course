@@ -17,8 +17,16 @@
     margin: 0 16px;
 }
 
+#new-request label h2 {
+    margin: 0;
+}
+
 #new-request h3 {
     margin-top: 8px;
+}
+
+#new-request .hint {
+    margin-left: 16px;
 }
 
 #new-request .container form {
@@ -34,6 +42,11 @@
     align-items: start;
 }
 
+#new-request .row:last-of-type {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
 #new-request .input {
     display: flex;
     flex-direction: column;
@@ -45,7 +58,8 @@
 }
 
 #new-request input,
-#new-request select {
+#new-request select,
+#new-request textarea {
     padding: 8px 16px;
     background-color: var(--background-lower);
     color: var(--foreground);
@@ -116,6 +130,10 @@
     cursor: pointer;
 }
 
+#new-request textarea {
+    resize: none;
+}
+
 #new-request input[type="submit"] {
     margin-top: calc(8px);
     width: 100%;
@@ -137,7 +155,7 @@
 }
 
 #new-request #hostings-slider {
-    height: 248px;
+    height: 276px;
 }
 
 #new-request #hostings-container {
@@ -155,6 +173,11 @@
     scroll-snap-align: start;
 }
 
+#new-request .hostings-slider .hosting-wrap:first-of-type,
+#new-request .hostings-slider .hosting-wrap:last-of-type {
+    margin: 0;
+}
+
 #new-request .hostings-slider .hosting {
     background: var(--background-raise2);
     padding: 16px 16px 16px 24px;
@@ -164,6 +187,10 @@
 
 #new-request .hosting h2 {
     margin: 0;
+}
+
+#new-request .hosting span.hidden {
+    display: none;
 }
 
 #new-request .hosting .hosting-header {

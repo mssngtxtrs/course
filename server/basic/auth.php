@@ -56,7 +56,7 @@ class Auth {
 
 
     /* Получение ID пользователя */
-    private function getUserID(string $login): int {
+    public function getUserID(string $login): int {
         global $database;
         return $database->returnQuery(
             USER_ID_QUERY,

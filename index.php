@@ -15,7 +15,7 @@ require "server/basic/constructor.php";
 require "server/basic/messages.php";
 
 $constructor = new Server\Constructor(
-    website_name: "Курсач",
+    website_name: "EasyHost",
     templates_folder: "templates",
     media_folder: "/media",
     debug: $global_flags['debug'],
