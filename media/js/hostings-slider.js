@@ -113,7 +113,6 @@ function buildSlider() {
                 retries += 1;
                 buildSlider();
             }
-            slider.innerHTML = "Error getting slider content";
         });
 }
 

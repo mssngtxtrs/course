@@ -1,11 +1,11 @@
 function checkPasswords() {
-    const pass = document.getElementById('password');
-    const confirm = document.getElementById('confirm');
+    const pass = document.querySelector('#reg #password');
+    const pass_confirm = document.getElementById('password-confirm');
 
-    if (pass.value !== confirm.value) {
-        confirm.setCustomValidity('Пароли не совпадают');
+    if (pass.value !== pass_confirm.value) {
+        pass_confirm.setCustomValidity('Пароли не совпадают');
     } else {
-        confirm.setCustomValidity('');
+        pass_confirm.setCustomValidity('');
     }
 }
 
