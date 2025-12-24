@@ -25,21 +25,10 @@ case $path == '/':
 
 
 
-case $path == '/about':
+case $path == '/sitemap':
     echo $constructor->constructPage(
-        [ "head", "header", "about", "footer" ],
-        "О нас",
-        $global_flags['show-messages']
-    );
-    $_SESSION['page_back'] = $request;
-    break;
-
-
-
-case $path == '/hostings':
-    echo $constructor->constructPage(
-        [ "head", "header", "footer" ],
-        "Хостинги",
+        [ "head", "header", "sitemap", "footer" ],
+        "Карта сайта",
         $global_flags['show-messages']
     );
     $_SESSION['page_back'] = $request;
